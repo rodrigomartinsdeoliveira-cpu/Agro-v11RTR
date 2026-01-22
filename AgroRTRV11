@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1b5e20">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>AgroRTR App</title>
+    <style>
+        :root { --primary: #2e7d32; --light: #e8f5e9; --accent: #f9a825; --dark: #1b5e20; --danger: #d32f2f; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; padding-bottom: 80px; }
+        .app-container { width: 100%; max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; position: relative; }
+        
+        /* Header */
+        .header { background: var(--dark); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .header h1 { margin: 0; font-size: 1.2rem; font-weight: 700; }
+        .header p { margin: 2px 0 0; font-size: 0.75rem; opacity: 0.8; }
+
+        /* Conteúdo */
+        .content { display: none; padding: 15px; animation: fadeIn 0.2s; }
+        .content.active { display: block; }
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
+
+        /* Cartões */
+        .card { background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-title { font-weight: bold; color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase; }
+
+        /* Inputs Mobile */
+        label { display: block; margin-top: 15px; font-weight: 700; color: #333; font-size: 0.85rem; }
+        select, input, textarea { width: 100%; padding: 14px; margin-top: 5px; border: 1px solid #bbb; border-radius: 8px; font-size: 16px; background: #fafafa; color: #333; appearance: none; -webkit-appearance: none; }
+        
+        /* Botões */
+        button { width: 100%; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-secondary { background-color: white; color: var(--dark); border: 1px solid var(--primary); }
+        .btn-danger { background: #ffebee; color: var(--danger); border: 1px solid #ffcdd2; margin-top: 10px; font-size: 0.85rem; }
+        .btn-gps { background: #fff; border: 1px dashed var(--primary); color: var(--dark); display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* Foto e Dica */
+        .foto-box { height: 180px; background: #f0f0f0; border-radius: 8px; margin-top: 8px; display: flex; align-items: center; justify-content: center; position: relative; border: 2px dashed #ccc; overflow: hidden;}
+        .foto-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; top:0; left:0; z-index: 10; }
+        .dica-box { background: #fff8e1; padding: 12px; border-radius: 8px; border-left: 5px solid var(--accent); color: #5d4037; font-size: 0.9rem; margin-top: 15px; display: none; }
+
+        /* Listas */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #eee; }
+
+        /* Menu Inferior */
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: white; border-top: 1px solid #ddd; display: flex; z-index: 2000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; font-size: 0.7rem; cursor: pointer; user-select: none; }
+        .nav-btn.active { color: var(--primary); font-weight: 800; }
+        .nav-icon { font-size: 1.5rem; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>🌱 AgroRTR Web</h1>
+        <p>Sistema Mobile v11</p>
+    </div>
+
+    <div id="tab-vistoria" class="content active">
+        <div class="card">
+            <div class="card-title">Nova Visita</div>
+            <label>📍 Cliente</label>
+            <select id="sel-cliente"><option value="">Carregando...</option></select>
+            <label>🌽 Fase do Milho</label>
+            <select id="sel-fase">
+                <option value="">Selecione...</option>
+                <optgroup label="Vegetativo"><option value="VE">VE (Emergência)</option><option value="V1-V3">V1-V3</option><option value="V4-V6">V4-V6</option><option value="V8-Vt">V8-Vt</option></optgroup>
+                <optgroup label="Reprodutivo"><option value="R1">R1 (Polinização)</option><option value="R2-R3">R2-R3</option><option value="R6">R6 (Maturidade)</option></optgroup>
+            </select>
+            <label>📡 GPS</label>
+            <div id="gps-res" style="font-size:0.8rem; color:green; display:none; margin-bottom:5px;"></div>
+            <button class="btn-gps" type="button" onclick="pegarGPS()">📍 Capturar GPS</button>
+            <label>📷 Foto</label>
+            <div class="foto-box">
+                <span id="foto-txt">📸 Tocar para Foto</span>
+                <img id="img-preview">
+                <input type="file" accept="image/*" capture="environment" onchange="lerFoto(this)">
+            </div>
+            <label>🐛 Diagnóstico</label>
+            <select id="sel-problema" onchange="verDica()"><option value="">Selecione...</option></select>
+            <div id="box-dica" class="dica-box"></div>
+            <label>📝 Obs</label>
+            <textarea id="txt-obs" rows="3"></textarea>
+            <button class="btn-primary" type="button" onclick="salvar()">💾 SALVAR VISITA</button>
+        </div>
+    </div>
+
+    <div id="tab-historico" class="content">
+        <div class="card">
+            <div class="card-title">Visitas Recentes</div>
+            <div id="lista-visitas"><p style="text-align:center; color:#999">Vazio</p></div>
+        </div>
+    </div>
+
+    <div id="tab-gestao" class="content">
+        <div class="card">
+            <div class="card-title">👥 Clientes</div>
+            <div id="lista-clientes-admin"></div>
+            <hr>
+            <input type="text" id="novo-cli-nome" placeholder="Nome">
+            <input type="text" id="novo-cli-faz" placeholder="Fazenda">
+            <button class="btn-secondary" onclick="addCliente()">+ Cadastrar</button>
+        </div>
+        <div class="card">
+            <div class="card-title">📚 Biblioteca</div>
+            <div id="lista-diag-admin"></div>
+            <hr>
+            <select id="novo-diag-cat"><option value="Pragas">Pragas</option><option value="Doenças">Doenças</option><option value="Nutrição">Nutrição</option></select>
+            <input type="text" id="novo-diag-nome" placeholder="Nome">
+            <input type="text" id="novo-diag-dica" placeholder="Dica">
+            <button class="btn-secondary" onclick="addDiag()">+ Adicionar</button>
+        </div>
+        <div class="card">
+            <button class="btn-primary" style="background:#000" onclick="exportar()">Enviar Dados (Zap)</button>
+        </div>
+        <button class="btn-danger" onclick="limparTudo()">🗑️ RESET TOTAL</button>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-btn active" onclick="mudarAba('vistoria', this)"><div class="nav-icon">🌾</div>Vistoria</div>
+        <div class="nav-btn" onclick="mudarAba('historico', this)"><div class="nav-icon">📋</div>Histórico</div>
+        <div class="nav-btn" onclick="mudarAba('gestao', this)"><div class="nav-icon">⚙️</div>Gestão</div>
+    </div>
+</div>
+
+<script>
+    const KEY_CLI='agro_v11_c', KEY_DIAG='agro_v11_d', KEY_VIS='agro_v11_v';
+    let clientes=[], diagnosticos=[], visitas=[], gps=null, temFoto=false;
+    const pCli=[{nome:"Manoel", fazenda:"Fazenda Modelo"}];
+    const pDiag=[{cat:"Pragas", nome:"Cigarrinha", dica:"Monitorar enfezamento."},{cat:"Pragas", nome:"Lagarta", dica:"Nível 20%."},{cat:"Doenças", nome:"Mancha Branca", dica:"Fungicida."},{cat:"Nutrição", nome:"Def. Nitrogênio", dica:"Ureia cobertura."}];
+
+    window.onload = function() { initApp(); }
+
+    function initApp() {
+        try {
+            clientes = JSON.parse(localStorage.getItem(KEY_CLI)) || pCli;
+            diagnosticos = JSON.parse(localStorage.getItem(KEY_DIAG)) || pDiag;
+            visitas = JSON.parse(localStorage.getItem(KEY_VIS)) || [];
+            if(clientes.length===0) clientes=pCli;
+            renderAll();
+        } catch(e) { localStorage.clear(); location.reload(); }
+    }
+
+    function renderAll() { renderCli(); renderDiag(); renderVis(); }
+
+    function renderCli() {
+        const s = document.getElementById('sel-cliente'), l = document.getElementById('lista-clientes-admin');
+        s.innerHTML='<option value="">Selecione...</option>'; l.innerHTML='';
+        clientes.forEach((c,i) => {
+            s.innerHTML+=`<option value="${i}">${c.nome} - ${c.fazenda}</option>`;
+            l.innerHTML+=`<div class="list-item"><b>${c.nome}</b> <span onclick="delCli(${i})" style="color:red">🗑️</span></div>`;
+        });
+    }
+
+    function renderDiag() {
+        const s = document.getElementById('sel-problema'), l = document.getElementById('lista-diag-admin');
+        s.innerHTML='<option value="">Selecione...</option>'; l.innerHTML='';
+        const cats = [...new Set(diagnosticos.map(d=>d.cat))];
+        cats.forEach(c=>{
+            let g=document.createElement('optgroup'); g.label=c;
+            diagnosticos.filter(d=>d.cat===c).forEach(d=>{ let o=document.createElement('option'); o.value=d.nome; o.innerText=d.nome; g.appendChild(o); });
+            s.appendChild(g);
+        });
+        diagnosticos.forEach((d,i)=> l.innerHTML+=`<div class="list-item">${d.nome} <span onclick="delDiag(${i})" style="color:red">🗑️</span></div>`);
+    }
+
+    function renderVis() {
+        const l = document.getElementById('lista-visitas');
+        l.innerHTML = visitas.length ? '' : '<p style="text-align:center;color:#999">Vazio</p>';
+        visitas.forEach(v => {
+            let z = `📋 *RELATÓRIO*%0A👤 ${v.c}%0A🌽 ${v.f}%0A🚨 ${v.p}%0A📝 ${v.o}`;
+            l.innerHTML+=`<div class="card" style="border-left:4px solid var(--primary)"><b>${v.c}</b><br><small>${v.d}</small><br><b style="color:#c62828">${v.p}</b><br><button class="btn-primary" style="padding:10px;margin-top:5px;background:#25D366" onclick="window.open('https://wa.me/?text=${z}')">ZAP</button></div>`;
+        });
+    }
+
+    function addCliente() {
+        const n=document.getElementById('novo-cli-nome').value, f=document.getElementById('novo-cli-faz').value;
+        if(n&&f) { clientes.push({nome:n, fazenda:f}); save(KEY_CLI, clientes); renderCli(); document.getElementById('novo-cli-nome').value=''; }
+    }
+    function delCli(i) { if(confirm('Apagar?')) { clientes.splice(i,1); save(KEY_CLI, clientes); renderCli(); } }
+    
+    function addDiag() {
+        const c=document.getElementById('novo-diag-cat').value, n=document.getElementById('novo-diag-nome').value, d=document.getElementById('novo-diag-dica').value;
+        if(n&&d) { diagnosticos.push({cat:c, nome:n, dica:d}); save(KEY_DIAG, diagnosticos); renderDiag(); document.getElementById('novo-diag-nome').value=''; }
+    }
+    function delDiag(i) { if(confirm('Apagar?')) { diagnosticos.splice(i,1); save(KEY_DIAG, diagnosticos); renderDiag(); } }
+
+    function salvar() {
+        const i=document.getElementById('sel-cliente').value, f=document.getElementById('sel-fase').value, p=document.getElementById('sel-problema').value, o=document.getElementById('txt-obs').value;
+        if(!i||!f||!p) return alert('Preencha tudo!');
+        const c=clientes[i], d=diagnosticos.find(x=>x.nome===p);
+        visitas.unshift({d:new Date().toLocaleDateString(), c:c.nome, f, p, o, gps, ft:temFoto});
+        save(KEY_VIS, visitas); alert('Salvo!'); renderVis(); mudarAba('historico', document.querySelectorAll('.nav-btn')[1]);
+        document.getElementById('sel-problema').value=''; document.getElementById('txt-obs').value=''; document.getElementById('box-dica').style.display='none';
+    }
+
+    function save(k,v) { localStorage.setItem(k, JSON.stringify(v)); }
+    function mudarAba(id, el) { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+    function verDica() { const n=document.getElementById('sel-problema').value, d=diagnosticos.find(x=>x.nome===n), b=document.getElementById('box-dica'); if(d){b.style.display='block';b.innerText='💡 '+d.dica;}else{b.style.display='none';} }
+    function pegarGPS() { 
+        document.getElementById('gps-res').style.display='block'; document.getElementById('gps-res').innerText='Buscando...';
+        navigator.geolocation.getCurrentPosition(p=>{gps={lat:p.coords.latitude,lng:p.coords.longitude};document.getElementById('gps-res').innerText='✅ OK';},e=>document.getElementById('gps-res').innerText='Erro GPS'); 
+    }
+    function lerFoto(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>{document.getElementById('img-preview').src=e.target.result;document.getElementById('img-preview').style.display='block';document.getElementById('foto-txt').style.display='none';temFoto=true;};r.readAsDataURL(i.files[0]); } }
+    function exportar() { let t="DATA;CLIENTE;PROBLEMA\n"; visitas.forEach(v=>t+=`${v.d};${v.c};${v.p}\n`); window.open(`https://wa.me/?text=${encodeURIComponent(t)}`); }
+    function limparTudo() { if(confirm('Zerar?')) { localStorage.clear(); location.reload(); } }
+</script>
+</body>
+</html>
