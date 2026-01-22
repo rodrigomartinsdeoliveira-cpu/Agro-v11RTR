@@ -4,212 +4,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1b5e20">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>AgroRTR App</title>
+    <title>AgroRTR Titan</title>
     <style>
-        :root { --primary: #2e7d32; --light: #e8f5e9; --accent: #f9a825; --dark: #1b5e20; --danger: #d32f2f; }
+        :root { --p: #2e7d32; --s: #e8f5e9; --a: #f9a825; --d: #1b5e20; --r: #d32f2f; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; padding-bottom: 80px; }
-        .app-container { width: 100%; max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; position: relative; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f4f4; margin: 0; padding-bottom: 80px; }
+        .app { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; }
         
         /* Header */
-        .header { background: var(--dark); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .header h1 { margin: 0; font-size: 1.2rem; font-weight: 700; }
-        .header p { margin: 2px 0 0; font-size: 0.75rem; opacity: 0.8; }
-
-        /* Conteúdo */
-        .content { display: none; padding: 15px; animation: fadeIn 0.2s; }
-        .content.active { display: block; }
-        @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
-
-        /* Cartões */
-        .card { background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card-title { font-weight: bold; color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase; }
-
-        /* Inputs Mobile */
-        label { display: block; margin-top: 15px; font-weight: 700; color: #333; font-size: 0.85rem; }
-        select, input, textarea { width: 100%; padding: 14px; margin-top: 5px; border: 1px solid #bbb; border-radius: 8px; font-size: 16px; background: #fafafa; color: #333; appearance: none; -webkit-appearance: none; }
+        .head { background: var(--d); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .head h1 { margin: 0; font-size: 1.1rem; }
         
-        /* Botões */
-        button { width: 100%; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-secondary { background-color: white; color: var(--dark); border: 1px solid var(--primary); }
-        .btn-danger { background: #ffebee; color: var(--danger); border: 1px solid #ffcdd2; margin-top: 10px; font-size: 0.85rem; }
-        .btn-gps { background: #fff; border: 1px dashed var(--primary); color: var(--dark); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        /* Tabs */
+        .tab-content { display: none; padding: 15px; animation: fadeIn 0.3s; }
+        .active { display: block; }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
 
-        /* Foto e Dica */
-        .foto-box { height: 180px; background: #f0f0f0; border-radius: 8px; margin-top: 8px; display: flex; align-items: center; justify-content: center; position: relative; border: 2px dashed #ccc; overflow: hidden;}
-        .foto-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; top:0; left:0; z-index: 10; }
-        .dica-box { background: #fff8e1; padding: 12px; border-radius: 8px; border-left: 5px solid var(--accent); color: #5d4037; font-size: 0.9rem; margin-top: 15px; display: none; }
+        /* Card */
+        .card { border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card h3 { margin-top: 0; color: var(--d); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
 
-        /* Listas */
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #eee; }
+        /* Inputs */
+        label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.8rem; color: #555; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #bbb; border-radius: 8px; font-size: 16px; background: #fafafa; }
+        
+        /* Grid para Cidade/UF */
+        .row { display: flex; gap: 10px; }
+        .col { flex: 1; }
 
-        /* Menu Inferior */
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: white; border-top: 1px solid #ddd; display: flex; z-index: 2000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; font-size: 0.7rem; cursor: pointer; user-select: none; }
-        .nav-btn.active { color: var(--primary); font-weight: 800; }
-        .nav-icon { font-size: 1.5rem; margin-bottom: 3px; }
+        /* Buttons */
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .btn-main { background: var(--p); color: white; }
+        .btn-sec { background: white; border: 1px solid var(--p); color: var(--d); }
+        .btn-zap { background: #25D366; color: white; }
+        .btn-del { background: #ffebee; color: var(--r); border: 1px solid #ffcdd2; font-size: 0.8rem; padding: 10px; }
+        .btn-gps { background: #fff; border: 1px dashed var(--p); color: var(--d); display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+        /* Features */
+        .dica { background: #fff8e1; padding: 10px; border-left: 4px solid var(--a); margin-top: 10px; font-size: 0.9rem; display: none; }
+        .foto-area { height: 150px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; margin-top: 5px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .foto-area img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .foto-area input { position: absolute; width: 100%; height: 100%; opacity: 0; }
+
+        /* Nav */
+        .nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: white; border-top: 1px solid #ddd; display: flex; z-index: 1000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; color: #999; }
+        .nav-item.active { color: var(--p); font-weight: 800; }
+        .icon { font-size: 1.4rem; margin-bottom: 2px; }
+        
+        /* List Items */
+        .li-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="header">
-        <h1>🌱 AgroRTR Web</h1>
-        <p>Sistema Mobile v11</p>
+<div class="app">
+    <div class="head">
+        <h1>🌱 AgroRTR Titan</h1>
+        <div style="font-size:0.7rem; opacity:0.8">Sistema v13.0</div>
     </div>
 
-    <div id="tab-vistoria" class="content active">
+    <div id="tab1" class="tab-content active">
         <div class="card">
-            <div class="card-title">Nova Visita</div>
-            <label>📍 Cliente</label>
-            <select id="sel-cliente"><option value="">Carregando...</option></select>
+            <h3>Nova Visita</h3>
+            
+            <label>📍 Cliente / Fazenda</label>
+            <select id="v_cli"><option value="">Selecione...</option></select>
+
             <label>🌽 Fase do Milho</label>
-            <select id="sel-fase">
+            <select id="v_fase">
                 <option value="">Selecione...</option>
-                <optgroup label="Vegetativo"><option value="VE">VE (Emergência)</option><option value="V1-V3">V1-V3</option><option value="V4-V6">V4-V6</option><option value="V8-Vt">V8-Vt</option></optgroup>
-                <optgroup label="Reprodutivo"><option value="R1">R1 (Polinização)</option><option value="R2-R3">R2-R3</option><option value="R6">R6 (Maturidade)</option></optgroup>
+                <optgroup label="Vegetativo"><option value="VE">VE (Emergência)</option><option value="V1-V3">V1-V3 (Definição)</option><option value="V4-V6">V4-V6 (Espiga)</option><option value="V8-Vt">V8-Vt (Pendoamento)</option></optgroup>
+                <optgroup label="Reprodutivo"><option value="R1">R1 (Polinização)</option><option value="R2-R3">R2-R3 (Enchimento)</option><option value="R6">R6 (Maturidade)</option></optgroup>
             </select>
+
             <label>📡 GPS</label>
-            <div id="gps-res" style="font-size:0.8rem; color:green; display:none; margin-bottom:5px;"></div>
-            <button class="btn-gps" type="button" onclick="pegarGPS()">📍 Capturar GPS</button>
+            <div id="gps_msg" style="font-size:0.8rem; color:green; display:none; margin-bottom:5px"></div>
+            <button class="btn-gps" onclick="getGPS()">📍 Capturar Local</button>
+
             <label>📷 Foto</label>
-            <div class="foto-box">
-                <span id="foto-txt">📸 Tocar para Foto</span>
-                <img id="img-preview">
-                <input type="file" accept="image/*" capture="environment" onchange="lerFoto(this)">
+            <div class="foto-area">
+                <span id="foto_txt">Toque para Foto</span>
+                <img id="foto_img">
+                <input type="file" accept="image/*" capture="environment" onchange="loadFoto(this)">
             </div>
-            <label>🐛 Diagnóstico</label>
-            <select id="sel-problema" onchange="verDica()"><option value="">Selecione...</option></select>
-            <div id="box-dica" class="dica-box"></div>
-            <label>📝 Obs</label>
-            <textarea id="txt-obs" rows="3"></textarea>
-            <button class="btn-primary" type="button" onclick="salvar()">💾 SALVAR VISITA</button>
+
+            <label>🐛 Diagnóstico (Enciclopédia)</label>
+            <select id="v_diag" onchange="showDica()"><option value="">Selecione...</option></select>
+            <div id="v_dica" class="dica"></div>
+
+            <label>📝 Observação</label>
+            <textarea id="v_obs" rows="2"></textarea>
+
+            <button class="btn-main" onclick="saveVisit()">💾 SALVAR REGISTRO</button>
         </div>
     </div>
 
-    <div id="tab-historico" class="content">
+    <div id="tab2" class="tab-content">
         <div class="card">
-            <div class="card-title">Visitas Recentes</div>
-            <div id="lista-visitas"><p style="text-align:center; color:#999">Vazio</p></div>
+            <h3>Últimas Visitas</h3>
+            <div id="list_vis"><p style="text-align:center; color:#999">Nenhum registro.</p></div>
         </div>
     </div>
 
-    <div id="tab-gestao" class="content">
+    <div id="tab3" class="tab-content">
         <div class="card">
-            <div class="card-title">👥 Clientes</div>
-            <div id="lista-clientes-admin"></div>
-            <hr>
-            <input type="text" id="novo-cli-nome" placeholder="Nome">
-            <input type="text" id="novo-cli-faz" placeholder="Fazenda">
-            <button class="btn-secondary" onclick="addCliente()">+ Cadastrar</button>
+            <h3>👥 Novo Cliente</h3>
+            <label>Nome do Produtor</label>
+            <input id="c_nome" placeholder="Ex: João da Silva">
+            
+            <label>Nome da Fazenda</label>
+            <input id="c_faz" placeholder="Ex: Sítio Esperança">
+            
+            <label>Endereço da Fazenda</label>
+            <input id="c_end" placeholder="Ex: Estrada do Cerne, Km 15">
+            
+            <div class="row">
+                <div class="col">
+                    <label>Cidade</label>
+                    <input id="c_cid" placeholder="Curitiba">
+                </div>
+                <div class="col">
+                    <label>UF</label>
+                    <input id="c_uf" placeholder="PR" style="text-transform:uppercase" maxlength="2">
+                </div>
+            </div>
+
+            <button class="btn-sec" onclick="addCli()">+ Cadastrar Cliente</button>
         </div>
+
         <div class="card">
-            <div class="card-title">📚 Biblioteca</div>
-            <div id="lista-diag-admin"></div>
-            <hr>
-            <select id="novo-diag-cat"><option value="Pragas">Pragas</option><option value="Doenças">Doenças</option><option value="Nutrição">Nutrição</option></select>
-            <input type="text" id="novo-diag-nome" placeholder="Nome">
-            <input type="text" id="novo-diag-dica" placeholder="Dica">
-            <button class="btn-secondary" onclick="addDiag()">+ Adicionar</button>
+            <h3>📋 Lista de Clientes</h3>
+            <div id="list_cli"></div>
         </div>
+
         <div class="card">
-            <button class="btn-primary" style="background:#000" onclick="exportar()">Enviar Dados (Zap)</button>
+            <h3>⚙️ Manutenção</h3>
+            <button class="btn-main" style="background:#000" onclick="exportData()">📤 Enviar Relatório Geral</button>
+            <button class="btn-del" onclick="resetApp()">🗑️ ZERAR TUDO (RESET)</button>
         </div>
-        <button class="btn-danger" onclick="limparTudo()">🗑️ RESET TOTAL</button>
     </div>
 
-    <div class="nav-bar">
-        <div class="nav-btn active" onclick="mudarAba('vistoria', this)"><div class="nav-icon">🌾</div>Vistoria</div>
-        <div class="nav-btn" onclick="mudarAba('historico', this)"><div class="nav-icon">📋</div>Histórico</div>
-        <div class="nav-btn" onclick="mudarAba('gestao', this)"><div class="nav-icon">⚙️</div>Gestão</div>
+    <div class="nav">
+        <div class="nav-item active" onclick="go(1, this)"><div class="icon">🌾</div>Vistoria</div>
+        <div class="nav-item" onclick="go(2, this)"><div class="icon">📋</div>Histórico</div>
+        <div class="nav-item" onclick="go(3, this)"><div class="icon">⚙️</div>Gestão</div>
     </div>
 </div>
 
 <script>
-    const KEY_CLI='agro_v11_c', KEY_DIAG='agro_v11_d', KEY_VIS='agro_v11_v';
-    let clientes=[], diagnosticos=[], visitas=[], gps=null, temFoto=false;
-    const pCli=[{nome:"Manoel", fazenda:"Fazenda Modelo"}];
-    const pDiag=[{cat:"Pragas", nome:"Cigarrinha", dica:"Monitorar enfezamento."},{cat:"Pragas", nome:"Lagarta", dica:"Nível 20%."},{cat:"Doenças", nome:"Mancha Branca", dica:"Fungicida."},{cat:"Nutrição", nome:"Def. Nitrogênio", dica:"Ureia cobertura."}];
+    // DADOS INICIAIS ROBUSTOS
+    const DB_CLI = 'rtr_cli_v13', DB_VIS = 'rtr_vis_v13';
+    let gps = null, hasFoto = false;
 
-    window.onload = function() { initApp(); }
+    // BIBLIOTECA COMPLETA
+    const DIAGNOSTICS = [
+        {c:"PRAGAS", n:"Cigarrinha (Dalbulus)", d:"Vetor de Enfezamentos. Controle químico imediato."},
+        {c:"PRAGAS", n:"Lagarta-do-Cartucho", d:"Monitorar raspagem. Nível de dano 20%."},
+        {c:"PRAGAS", n:"Percevejo Barriga-Verde", d:"Dano no colmo/ponto de crescimento. Crítico."},
+        {c:"PRAGAS", n:"Pulgão-do-Milho", d:"Sucção de seiva e fumagina. Monitorar."},
+        {c:"PRAGAS", n:"Vaquinha", d:"Desfolha e dano no pendão. Controle se pop. alta."},
+        {c:"DOENÇAS", n:"Mancha Branca", d:"Favorecida por umidade. Fungicida sistêmico."},
+        {c:"DOENÇAS", n:"Ferrugem Polissora", d:"Clima quente/baixa altitude. Preventivo."},
+        {c:"DOENÇAS", n:"Enfezamento Vermelho", d:"Folhas avermelhadas. Sem cura. Controle vetor."},
+        {c:"DOENÇAS", n:"Enfezamento Pálido", d:"Estrias cloróticas. Sem cura. Controle vetor."},
+        {c:"DOENÇAS", n:"Cercosporiose", d:"Manchas retangulares cinzas. Monitorar híbridos."},
+        {c:"NUTRIÇÃO", n:"Def. Nitrogênio", d:"Amarelado em V invertido. Ureia cobertura."},
+        {c:"NUTRIÇÃO", n:"Def. Potássio", d:"Queima das bordas das folhas velhas."},
+        {c:"NUTRIÇÃO", n:"Def. Fósforo", d:"Folhas roxas. Comum em frio/compactação."},
+        {c:"NUTRIÇÃO", n:"Def. Magnésio", d:"Estrias brancas internervais."},
+        {c:"NUTRIÇÃO", n:"Def. Zinco", d:"Faixas brancas largas nas folhas novas."},
+        {c:"DANINHAS", n:"Buva", d:"Resistente a glifosato. Usar alternativos."},
+        {c:"DANINHAS", n:"Capim Amargoso", d:"Touceiras perenes. Graminicida específico."},
+        {c:"OUTROS", n:"Estresse Hídrico", d:"Folhas encartuchadas. Aguardar chuva."},
+        {c:"OUTROS", n:"Granizo", d:"Avaliar perda de área foliar e stand."},
+        {c:"OUTROS", n:"Sem Problemas", d:"Lavoura sadia. Manter monitoramento."}
+    ];
 
-    function initApp() {
-        try {
-            clientes = JSON.parse(localStorage.getItem(KEY_CLI)) || pCli;
-            diagnosticos = JSON.parse(localStorage.getItem(KEY_DIAG)) || pDiag;
-            visitas = JSON.parse(localStorage.getItem(KEY_VIS)) || [];
-            if(clientes.length===0) clientes=pCli;
-            renderAll();
-        } catch(e) { localStorage.clear(); location.reload(); }
+    // INICIAR
+    let clientes = JSON.parse(localStorage.getItem(DB_CLI) || '[]');
+    let visitas = JSON.parse(localStorage.getItem(DB_VIS) || '[]');
+
+    // Se vazio, cria Manoel
+    if(clientes.length === 0) {
+        clientes.push({n:"Manoel", f:"Fazenda Modelo", e:"Est. do Cerne, Km 10", c:"Curitiba", u:"PR"});
+        saveCli();
     }
 
-    function renderAll() { renderCli(); renderDiag(); renderVis(); }
+    window.onload = renderAll;
 
-    function renderCli() {
-        const s = document.getElementById('sel-cliente'), l = document.getElementById('lista-clientes-admin');
-        s.innerHTML='<option value="">Selecione...</option>'; l.innerHTML='';
+    function renderAll() {
+        // Select Cliente
+        let sel = document.getElementById('v_cli');
+        sel.innerHTML = '<option value="">Selecione...</option>';
+        clientes.forEach((c,i) => sel.innerHTML += `<option value="${i}">${c.n} - ${c.f}</option>`);
+
+        // Lista Clientes
+        let list = document.getElementById('list_cli');
+        list.innerHTML = '';
         clientes.forEach((c,i) => {
-            s.innerHTML+=`<option value="${i}">${c.nome} - ${c.fazenda}</option>`;
-            l.innerHTML+=`<div class="list-item"><b>${c.nome}</b> <span onclick="delCli(${i})" style="color:red">🗑️</span></div>`;
+            list.innerHTML += `<div class="li-item"><div><b>${c.n}</b><br><small>${c.f}<br>${c.e} - ${c.c}/${c.u}</small></div><button class="btn-del" style="width:auto" onclick="delCli(${i})">🗑️</button></div>`;
         });
-    }
 
-    function renderDiag() {
-        const s = document.getElementById('sel-problema'), l = document.getElementById('lista-diag-admin');
-        s.innerHTML='<option value="">Selecione...</option>'; l.innerHTML='';
-        const cats = [...new Set(diagnosticos.map(d=>d.cat))];
-        cats.forEach(c=>{
-            let g=document.createElement('optgroup'); g.label=c;
-            diagnosticos.filter(d=>d.cat===c).forEach(d=>{ let o=document.createElement('option'); o.value=d.nome; o.innerText=d.nome; g.appendChild(o); });
-            s.appendChild(g);
+        // Select Diagnostico
+        let selD = document.getElementById('v_diag');
+        selD.innerHTML = '<option value="">Selecione...</option>';
+        let cats = [...new Set(DIAGNOSTICS.map(d=>d.c))];
+        cats.forEach(cat => {
+            let grp = document.createElement('optgroup'); grp.label = cat;
+            DIAGNOSTICS.filter(d=>d.c===cat).forEach(d => {
+                let opt = document.createElement('option'); opt.value = d.n; opt.innerText = d.n;
+                grp.appendChild(opt);
+            });
+            selD.appendChild(grp);
         });
-        diagnosticos.forEach((d,i)=> l.innerHTML+=`<div class="list-item">${d.nome} <span onclick="delDiag(${i})" style="color:red">🗑️</span></div>`);
-    }
 
-    function renderVis() {
-        const l = document.getElementById('lista-visitas');
-        l.innerHTML = visitas.length ? '' : '<p style="text-align:center;color:#999">Vazio</p>';
+        // Histórico
+        let hist = document.getElementById('list_vis');
+        hist.innerHTML = visitas.length ? '' : '<p style="text-align:center; color:#999">Vazio</p>';
         visitas.forEach(v => {
-            let z = `📋 *RELATÓRIO*%0A👤 ${v.c}%0A🌽 ${v.f}%0A🚨 ${v.p}%0A📝 ${v.o}`;
-            l.innerHTML+=`<div class="card" style="border-left:4px solid var(--primary)"><b>${v.c}</b><br><small>${v.d}</small><br><b style="color:#c62828">${v.p}</b><br><button class="btn-primary" style="padding:10px;margin-top:5px;background:#25D366" onclick="window.open('https://wa.me/?text=${z}')">ZAP</button></div>`;
+            let zap = `📋 *RELATÓRIO TÉCNICO*%0A👤 ${v.cli_n} - ${v.cli_f}%0A📍 ${v.cli_e}, ${v.cli_c}-${v.cli_u}%0A🌽 Fase: ${v.fase}%0A🚨 *${v.diag}*%0A💡 ${v.dica}%0A📝 ${v.obs}`;
+            hist.innerHTML += `<div class="card" style="border-left:4px solid var(--p)"><b>${v.cli_n}</b> <small>${v.data}</small><br><small>${v.cli_f}</small><div style="color:var(--r);font-weight:bold;margin-top:5px">${v.diag}</div><button class="btn-zap" style="padding:10px;margin-top:5px" onclick="window.open('https://wa.me/?text=${zap}')">📲 Enviar Zap</button></div>`;
         });
     }
 
-    function addCliente() {
-        const n=document.getElementById('novo-cli-nome').value, f=document.getElementById('novo-cli-faz').value;
-        if(n&&f) { clientes.push({nome:n, fazenda:f}); save(KEY_CLI, clientes); renderCli(); document.getElementById('novo-cli-nome').value=''; }
+    // AÇÕES
+    function addCli() {
+        let n = val('c_nome'), f = val('c_faz'), e = val('c_end'), c = val('c_cid'), u = val('c_uf');
+        if(n && f && c) {
+            clientes.push({n, f, e, c, u: u.toUpperCase()});
+            saveCli(); renderAll();
+            ['c_nome','c_faz','c_end','c_cid','c_uf'].forEach(id=>document.getElementById(id).value='');
+            alert('Cliente Cadastrado!');
+        } else alert('Preencha Nome, Fazenda e Cidade!');
     }
-    function delCli(i) { if(confirm('Apagar?')) { clientes.splice(i,1); save(KEY_CLI, clientes); renderCli(); } }
+
+    function delCli(i) {
+        if(confirm('Apagar cliente?')) { clientes.splice(i,1); saveCli(); renderAll(); }
+    }
+
+    function saveVisit() {
+        let idx = val('v_cli'), fase = val('v_fase'), diagName = val('v_diag'), obs = val('v_obs');
+        if(!idx || !fase || !diagName) return alert('Preencha Cliente, Fase e Diagnóstico!');
+        
+        let cli = clientes[idx];
+        let diagObj = DIAGNOSTICS.find(d=>d.n === diagName);
+
+        visitas.unshift({
+            data: new Date().toLocaleDateString(),
+            cli_n: cli.n, cli_f: cli.f, cli_e: cli.e, cli_c: cli.c, cli_u: cli.u,
+            fase, diag: diagName,
+            dica: diagObj ? diagObj.d : '',
+            obs, gps, foto: hasFoto
+        });
+        
+        localStorage.setItem(DB_VIS, JSON.stringify(visitas));
+        alert('Visita Salva!');
+        
+        // Reset Form
+        document.getElementById('v_diag').value = '';
+        document.getElementById('v_obs').value = '';
+        document.getElementById('v_dica').style.display = 'none';
+        document.getElementById('foto_img').style.display = 'none';
+        document.getElementById('foto_txt').style.display = 'block';
+        gps = null; hasFoto = false;
+        
+        renderAll();
+        go(2, document.querySelectorAll('.nav-item')[1]);
+    }
+
+    // UTILITARIOS
+    function val(id) { return document.getElementById(id).value; }
+    function saveCli() { localStorage.setItem(DB_CLI, JSON.stringify(clientes)); }
     
-    function addDiag() {
-        const c=document.getElementById('novo-diag-cat').value, n=document.getElementById('novo-diag-nome').value, d=document.getElementById('novo-diag-dica').value;
-        if(n&&d) { diagnosticos.push({cat:c, nome:n, dica:d}); save(KEY_DIAG, diagnosticos); renderDiag(); document.getElementById('novo-diag-nome').value=''; }
-    }
-    function delDiag(i) { if(confirm('Apagar?')) { diagnosticos.splice(i,1); save(KEY_DIAG, diagnosticos); renderDiag(); } }
-
-    function salvar() {
-        const i=document.getElementById('sel-cliente').value, f=document.getElementById('sel-fase').value, p=document.getElementById('sel-problema').value, o=document.getElementById('txt-obs').value;
-        if(!i||!f||!p) return alert('Preencha tudo!');
-        const c=clientes[i], d=diagnosticos.find(x=>x.nome===p);
-        visitas.unshift({d:new Date().toLocaleDateString(), c:c.nome, f, p, o, gps, ft:temFoto});
-        save(KEY_VIS, visitas); alert('Salvo!'); renderVis(); mudarAba('historico', document.querySelectorAll('.nav-btn')[1]);
-        document.getElementById('sel-problema').value=''; document.getElementById('txt-obs').value=''; document.getElementById('box-dica').style.display='none';
+    function showDica() {
+        let n = val('v_diag');
+        let d = DIAGNOSTICS.find(x=>x.n===n);
+        let el = document.getElementById('v_dica');
+        if(d) { el.style.display='block'; el.innerText = "💡 " + d.d; }
+        else el.style.display='none';
     }
 
-    function save(k,v) { localStorage.setItem(k, JSON.stringify(v)); }
-    function mudarAba(id, el) { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); document.getElementById('tab-'+id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
-    function verDica() { const n=document.getElementById('sel-problema').value, d=diagnosticos.find(x=>x.nome===n), b=document.getElementById('box-dica'); if(d){b.style.display='block';b.innerText='💡 '+d.dica;}else{b.style.display='none';} }
-    function pegarGPS() { 
-        document.getElementById('gps-res').style.display='block'; document.getElementById('gps-res').innerText='Buscando...';
-        navigator.geolocation.getCurrentPosition(p=>{gps={lat:p.coords.latitude,lng:p.coords.longitude};document.getElementById('gps-res').innerText='✅ OK';},e=>document.getElementById('gps-res').innerText='Erro GPS'); 
+    function getGPS() {
+        let msg = document.getElementById('gps_msg');
+        msg.style.display='block'; msg.innerText='Buscando...';
+        navigator.geolocation.getCurrentPosition(
+            p => { gps = {lat:p.coords.latitude, lng:p.coords.longitude}; msg.innerText='✅ Capturado!'; },
+            e => { msg.innerText='Erro GPS'; }
+        );
     }
-    function lerFoto(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>{document.getElementById('img-preview').src=e.target.result;document.getElementById('img-preview').style.display='block';document.getElementById('foto-txt').style.display='none';temFoto=true;};r.readAsDataURL(i.files[0]); } }
-    function exportar() { let t="DATA;CLIENTE;PROBLEMA\n"; visitas.forEach(v=>t+=`${v.d};${v.c};${v.p}\n`); window.open(`https://wa.me/?text=${encodeURIComponent(t)}`); }
-    function limparTudo() { if(confirm('Zerar?')) { localStorage.clear(); location.reload(); } }
+
+    function loadFoto(i) {
+        if(i.files[0]) {
+            let r = new FileReader();
+            r.onload = e => {
+                let img = document.getElementById('foto_img');
+                img.src = e.target.result; img.style.display='block';
+                document.getElementById('foto_txt').style.display='none';
+                hasFoto = true;
+            };
+            r.readAsDataURL(i.files[0]);
+        }
+    }
+
+    function go(n, el) {
+        document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+        document.getElementById('tab'+n).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function exportData() {
+        let txt = "DATA;CLIENTE;FAZENDA;CIDADE;PROBLEMA\n";
+        visitas.forEach(v => txt += `${v.data};${v.cli_n};${v.cli_f};${v.cli_c};${v.diag}\n`);
+        window.open(`https://wa.me/?text=${encodeURIComponent("DADOS GERAIS:\n"+txt)}`);
+    }
+
+    function resetApp() {
+        if(confirm('ZERAR TUDO?')) { localStorage.clear(); location.reload(); }
+    }
 </script>
 </body>
 </html>
