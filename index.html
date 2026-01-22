@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1b5e20">
-    <title>AgroRTR v18</title>
+    <title>AgroRTR v20</title>
     <style>
-        :root { --primary: #2e7d32; --dark: #1b5e20; --bg: #f4f4f4; --danger: #d32f2f; --gray: #eceff1; }
+        :root { --p: #2e7d32; --d: #1b5e20; --bg: #f4f4f4; --danger: #d32f2f; --calc: #e3f2fd; --calc-t: #0d47a1; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 100px; }
         .app { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; }
         
         /* Header */
-        .head { background: var(--dark); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .head { background: var(--d); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .head h1 { margin: 0; font-size: 1.2rem; }
         
         /* Tabs */
@@ -22,23 +22,29 @@
 
         /* Card & Inputs */
         .card { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card h3 { margin: 0 0 10px 0; color: var(--dark); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .card h3 { margin: 0 0 10px 0; color: var(--d); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         
+        /* ESTILO DA CALCULADORA */
+        .calc-card { background: var(--calc); border: 1px solid #90caf9; }
+        .calc-card h3 { color: var(--calc-t); border-color: #bbdefb; }
+        .result-box { background: white; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 0.9rem; color: var(--calc-t); border: 1px dashed var(--calc-t); }
+
         label { display: block; margin-top: 12px; font-weight: bold; font-size: 0.8rem; color: #444; text-transform: uppercase; }
         input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; background: #fafafa; }
         
         .row { display: flex; gap: 10px; }
         .col { flex: 1; }
+        .dap-box { background: #e8f5e9; color: var(--p); padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; margin-top: 5px; display: inline-block; }
 
         /* Buttons */
         button { width: 100%; padding: 15px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        .btn-main { background: var(--primary); color: white; }
+        .btn-main { background: var(--p); color: white; }
         .btn-sec { background: #eee; color: #333; border: 1px solid #ccc; }
         .btn-zap { background: #25D366; color: white; flex: 1; }
         .btn-del-mini { background: #ffebee; color: var(--danger); border: 1px solid #ffcdd2; width: 50px; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
         .btn-del { background: #ffebee; color: var(--danger); padding: 8px; width: auto; margin: 0; font-size: 0.8rem; }
-        .btn-gps { background: white; border: 1px dashed var(--primary); color: var(--dark); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-back { background: #546e7a; color: white; margin-bottom: 15px; display: none; } /* Botão Voltar */
+        .btn-gps { background: white; border: 1px dashed var(--p); color: var(--d); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-back { background: #546e7a; color: white; margin-bottom: 15px; display: none; }
 
         /* Features */
         .foto-box { height: 180px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; margin-top: 5px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
@@ -48,17 +54,16 @@
         .dica { background: #fff3e0; padding: 10px; border-left: 4px solid orange; margin-top: 10px; font-size: 0.9rem; display: none; }
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
         .actions { display: flex; gap: 10px; margin-top: 10px; }
-
-        /* Folder Style (Pastas de Cliente) */
-        .folder { padding: 15px; background: var(--gray); border-radius: 8px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .folder:active { background: #cfd8dc; }
-        .folder-name { font-weight: bold; color: var(--dark); }
-        .folder-count { background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; }
+        
+        /* Folders */
+        .folder { padding: 15px; background: #eceff1; border-radius: 8px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .folder-name { font-weight: bold; color: var(--d); }
+        .folder-count { background: var(--p); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; }
 
         /* Nav */
         .nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: white; border-top: 1px solid #ddd; display: flex; z-index: 2000; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; color: #999; }
-        .nav-item.active { color: var(--primary); font-weight: 800; }
+        .nav-item.active { color: var(--p); font-weight: 800; }
         .icon { font-size: 1.5rem; margin-bottom: 2px; }
     </style>
 </head>
@@ -66,7 +71,7 @@
 
 <div class="app">
     <div class="head">
-        <h1>🌱 AgroRTR v18</h1>
+        <h1>🌱 AgroRTR v20</h1>
     </div>
 
     <div id="tab1" class="tab active">
@@ -76,7 +81,38 @@
             <label>📍 Cliente</label>
             <select id="v_cli"><option value="">Carregando...</option></select>
 
-            <label>🌽 Fase</label>
+            <div class="card calc-card">
+                <h3>📐 Calculadora de Plantio</h3>
+                <div class="row">
+                    <div class="col">
+                        <label>Espaçamento (cm)</label>
+                        <input type="number" id="c_esp" placeholder="Ex: 50" onkeyup="calcStand()">
+                    </div>
+                    <div class="col">
+                        <label>População (Ha)</label>
+                        <input type="number" id="c_pop" placeholder="Ex: 70000" onkeyup="calcStand()">
+                    </div>
+                </div>
+                <div class="result-box">
+                    🎯 Sementes/metro: <b id="r_sem">--</b><br>
+                    📏 Distância sementes: <b id="r_dist">--</b> cm
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label>📅 Data Plantio</label>
+                    <input type="date" id="v_data_plantio" onchange="calcDAP()">
+                </div>
+                <div class="col" style="display:flex; align-items:flex-end;">
+                    <div id="view_dap" class="dap-box">DAP: -- dias</div>
+                </div>
+            </div>
+
+            <label>🌧️ Chuva (mm)</label>
+            <input type="number" id="v_chuva" placeholder="Ex: 15">
+
+            <label>🌽 Fase do Milho</label>
             <select id="v_fase">
                 <option value="">Selecione...</option>
                 <optgroup label="Vegetativo"><option value="VE">VE (Emergência)</option><option value="V1-V3">V1-V3</option><option value="V4-V6">V4-V6</option><option value="V8-Vt">V8-Vt</option></optgroup>
@@ -98,6 +134,9 @@
             <select id="v_diag" onchange="mostrarDica()"><option value="">Selecione...</option></select>
             <div id="v_dica" class="dica"></div>
 
+            <label>💊 Manejo / Produtos</label>
+            <textarea id="v_prod" rows="2" placeholder="Produtos aplicados ou recomendados..."></textarea>
+
             <label>📝 Observação</label>
             <textarea id="v_obs" rows="2"></textarea>
 
@@ -107,7 +146,7 @@
 
     <div id="tab2" class="tab">
         <div class="card">
-            <h3 id="hist_title">Pasta de Clientes</h3>
+            <h3 id="hist_title">Pastas de Clientes</h3>
             <button id="btn_back" class="btn-back" onclick="fecharPasta()">⬅️ Voltar para Lista</button>
             <div id="list_vis"></div>
         </div>
@@ -116,9 +155,9 @@
     <div id="tab3" class="tab">
         <div class="card">
             <h3>👥 Novo Cliente</h3>
-            <label>Nome</label><input id="c_nome" placeholder="Produtor">
-            <label>Fazenda</label><input id="c_faz" placeholder="Propriedade">
-            <label>Endereço</label><input id="c_end" placeholder="Rodovia / Estrada">
+            <label>Nome</label><input id="c_nome">
+            <label>Fazenda</label><input id="c_faz">
+            <label>Endereço</label><input id="c_end">
             <div class="row">
                 <div class="col"><label>Cidade</label><input id="c_cid"></div>
                 <div class="col"><label>UF</label><input id="c_uf" style="text-transform:uppercase" maxlength="2"></div>
@@ -126,30 +165,17 @@
             <button class="btn-sec" onclick="addCli()">+ Cadastrar</button>
         </div>
         
-        <div class="card">
-            <h3>Lista de Clientes</h3>
-            <div id="list_cli"></div>
-        </div>
+        <div class="card"><h3>Clientes</h3><div id="list_cli"></div></div>
 
         <div class="card">
-            <h3>📚 Adicionar à Biblioteca</h3>
+            <h3>📚 Biblioteca</h3>
             <label>Categoria</label>
-            <select id="d_cat">
-                <option value="PRAGAS">Pragas</option>
-                <option value="DOENÇAS">Doenças</option>
-                <option value="NUTRIÇÃO">Nutrição</option>
-                <option value="DANINHAS">Daninhas</option>
-                <option value="OUTROS">Outros</option>
-            </select>
-            <label>Nome</label><input id="d_nome" placeholder="Ex: Percevejo">
-            <label>Dica</label><input id="d_dica" placeholder="Ex: Monitorar...">
+            <select id="d_cat"><option value="PRAGAS">Pragas</option><option value="DOENÇAS">Doenças</option><option value="NUTRIÇÃO">Nutrição</option><option value="DANINHAS">Daninhas</option><option value="OUTROS">Outros</option></select>
+            <label>Nome</label><input id="d_nome">
+            <label>Dica</label><input id="d_dica">
             <button class="btn-sec" onclick="addDiag()">+ Adicionar Item</button>
         </div>
-
-        <div class="card">
-            <h3>Itens da Biblioteca</h3>
-            <div id="list_diag"></div>
-        </div>
+        <div class="card"><h3>Itens</h3><div id="list_diag"></div></div>
 
         <div class="card">
             <button class="btn-main" style="background:#000" onclick="exportar()">📤 Relatório Geral (Zap)</button>
@@ -165,12 +191,11 @@
 </div>
 
 <script>
-    // CHAVE v18
-    const DB_CLI='rtr_c_v18', DB_DIAG='rtr_d_v18', DB_VIS='rtr_v_v18';
-    let gps = null, temFoto = false;
-    let clienteAtual = null; // Controla qual pasta está aberta
+    // CHAVE v20 (ATUALIZADA)
+    const DB_CLI='rtr_c_v20', DB_DIAG='rtr_d_v20', DB_VIS='rtr_v_v20';
+    let gps = null, temFoto = false, clienteAtual = null;
 
-    // DADOS PADRÃO
+    // PADRÃO
     const defCli = [{n:"Manoel", f:"Fazenda Modelo", e:"Est. Cerne Km 10", c:"Curitiba", u:"PR"}];
     const defDiag = [
         {c:"OUTROS", n:"✅ Planta Saudável", d:"Lavoura sadia. Manter monitoramento."},
@@ -193,217 +218,155 @@
 
     window.onload = renderTudo;
 
-    function renderTudo() {
-        renderCli();
-        renderDiag();
-        renderHist();
+    function renderTudo() { renderCli(); renderDiag(); renderHist(); }
+
+    // --- CÁLCULO DE STAND (NOVO) ---
+    function calcStand() {
+        let esp = parseFloat(document.getElementById('c_esp').value); // cm
+        let pop = parseFloat(document.getElementById('c_pop').value); // plantas/ha
+        
+        if(esp > 0 && pop > 0) {
+            // Metros lineares em 1 ha (10.000m2)
+            // Se espaçamento é 50cm (0.5m) -> 10000 / 0.5 = 20000 metros lineares
+            let metrosLineares = 10000 / (esp / 100);
+            
+            // Sementes por metro
+            let semPorMetro = pop / metrosLineares;
+            
+            // Distancia entre sementes (cm) -> 100cm / sementes por metro
+            let distSementes = 100 / semPorMetro;
+
+            document.getElementById('r_sem').innerText = semPorMetro.toFixed(2);
+            document.getElementById('r_dist').innerText = distSementes.toFixed(1);
+        } else {
+            document.getElementById('r_sem').innerText = "--";
+            document.getElementById('r_dist').innerText = "--";
+        }
     }
 
-    function renderCli() {
-        let sel = document.getElementById('v_cli');
-        sel.innerHTML = '<option value="">Selecione...</option>';
-        clientes.forEach((c,i) => sel.innerHTML += `<option value="${i}">${c.n} - ${c.f}</option>`);
+    // CÁLCULO DAP
+    function calcDAP() {
+        let input = document.getElementById('v_data_plantio').value;
+        let view = document.getElementById('view_dap');
+        if(input) {
+            let start = new Date(input); let end = new Date();
+            let diff = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+            view.innerText = `DAP: ${diff} dias`;
+            return diff;
+        } else { view.innerText = "DAP: -- dias"; return "--"; }
+    }
 
-        let list = document.getElementById('list_cli');
-        list.innerHTML = '';
-        clientes.forEach((c,i) => {
-            list.innerHTML += `<div class="list-item"><div><b>${c.n}</b><br><small>${c.f} (${c.c}/${c.u})</small></div><button class="btn-del" onclick="delCli(${i})">🗑️</button></div>`;
-        });
+    // RENDERIZADORES
+    function renderCli() {
+        let sel = document.getElementById('v_cli'); sel.innerHTML = '<option value="">Selecione...</option>';
+        clientes.forEach((c,i) => sel.innerHTML += `<option value="${i}">${c.n} - ${c.f}</option>`);
+        let list = document.getElementById('list_cli'); list.innerHTML = '';
+        clientes.forEach((c,i) => list.innerHTML += `<div class="list-item"><div><b>${c.n}</b><br><small>${c.f}</small></div><button class="btn-del" onclick="delCli(${i})">🗑️</button></div>`);
     }
 
     function renderDiag() {
-        let sel = document.getElementById('v_diag');
-        sel.innerHTML = '<option value="">Selecione...</option>';
+        let sel = document.getElementById('v_diag'); sel.innerHTML = '<option value="">Selecione...</option>';
         let cats = [...new Set(diagnosticos.map(d=>d.c))];
         cats.forEach(cat => {
             let grp = document.createElement('optgroup'); grp.label = cat;
-            diagnosticos.filter(d=>d.c===cat).forEach(d => {
-                let opt = document.createElement('option'); opt.value = d.n; opt.innerText = d.n; grp.appendChild(opt);
-            });
+            diagnosticos.filter(d=>d.c===cat).forEach(d => { let opt = document.createElement('option'); opt.value = d.n; opt.innerText = d.n; grp.appendChild(opt); });
             sel.appendChild(grp);
         });
-
-        let list = document.getElementById('list_diag');
-        list.innerHTML = '';
-        diagnosticos.forEach((d,i) => {
-            list.innerHTML += `<div class="list-item"><div><b>${d.n}</b> <small>${d.c}</small></div><button class="btn-del" onclick="delDiag(${i})">🗑️</button></div>`;
-        });
+        let list = document.getElementById('list_diag'); list.innerHTML = '';
+        diagnosticos.forEach((d,i) => list.innerHTML += `<div class="list-item"><div><b>${d.n}</b></div><button class="btn-del" onclick="delDiag(${i})">🗑️</button></div>`);
     }
 
-    // --- NOVA LÓGICA DE HISTÓRICO (PASTAS) ---
     function renderHist() {
         let list = document.getElementById('list_vis');
         let btn = document.getElementById('btn_back');
         let title = document.getElementById('hist_title');
-
         list.innerHTML = '';
 
         if (clienteAtual === null) {
-            // MODO LISTA DE CLIENTES (PASTAS)
-            btn.style.display = 'none';
-            title.innerText = "Selecione o Cliente";
-            
-            // Pega clientes únicos que têm visitas
+            btn.style.display = 'none'; title.innerText = "Pastas de Clientes";
             let clientesComVisita = [...new Set(visitas.map(v => v.cl_n))];
-            
-            if(clientesComVisita.length === 0) {
-                list.innerHTML = '<p style="text-align:center;color:#999;margin-top:20px">Nenhuma visita registrada.</p>';
-                return;
-            }
-
+            if(clientesComVisita.length === 0) { list.innerHTML = '<p style="text-align:center;color:#999;margin-top:20px">Nenhuma visita.</p>'; return; }
             clientesComVisita.forEach(nomeCli => {
                 let count = visitas.filter(v => v.cl_n === nomeCli).length;
-                list.innerHTML += `
-                    <div class="folder" onclick="abrirPasta('${nomeCli}')">
-                        <span class="folder-name">📂 ${nomeCli}</span>
-                        <span class="folder-count">${count} visitas</span>
-                    </div>`;
+                list.innerHTML += `<div class="folder" onclick="abrirPasta('${nomeCli}')"><span class="folder-name">📂 ${nomeCli}</span><span class="folder-count">${count}</span></div>`;
             });
-
         } else {
-            // MODO DETALHE (VISITAS DO CLIENTE)
-            btn.style.display = 'block';
-            title.innerText = "Histórico: " + clienteAtual;
-            
+            btn.style.display = 'block'; title.innerText = "Histórico: " + clienteAtual;
             let visitasFiltradas = visitas.filter(v => v.cl_n === clienteAtual);
+            if(visitasFiltradas.length === 0) { list.innerHTML = '<p style="text-align:center">Vazio</p>'; return; }
             
-            if(visitasFiltradas.length === 0) {
-                list.innerHTML = '<p style="text-align:center">Vazio</p>';
-                return;
-            }
-
             visitasFiltradas.forEach(v => {
                 let mapa = v.gps ? `https://www.google.com/maps?q=${v.gps.lat},${v.gps.lng}` : '';
-                let zap = `📋 *RELATÓRIO*%0A👤 ${v.cl_n} - ${v.cl_f}%0A📍 ${v.cl_e}, ${v.cl_c}/${v.cl_u}%0A🌽 ${v.fase}%0A🚨 ${v.diag}%0A💡 ${v.dica}%0A📝 ${v.obs}`;
+                // ZAP V20
+                let zap = `📋 *RELATÓRIO*%0A👤 ${v.cl_n} - ${v.cl_f}%0A📍 ${v.cl_e}, ${v.cl_c}/${v.cl_u}%0A📅 ${v.data} (DAP: ${v.dap} dias)%0A🌧️ Chuva: ${v.chuva}mm%0A🌽 ${v.fase}%0A🚨 *${v.diag}*%0A💡 ${v.dica}%0A💊 *Manejo:* ${v.prod}%0A📝 ${v.obs}`;
+                
+                // Inclui dados de plantio no Zap se existirem
+                if(v.calc_sem && v.calc_sem !== '--') {
+                    zap += `%0A📐 *Plantio:* ${v.calc_sem} sem/m (${v.calc_dist}cm)`;
+                }
+
                 if(mapa) zap += `%0A🗺️ Mapa: ${mapa}`;
                 if(v.ft) zap += `%0A📷 [FOTO EM ANEXO]`;
 
                 list.innerHTML += `<div class="card" style="border-left:4px solid green">
-                    <small>${v.data}</small><br>
-                    <b>${v.cl_f}</b>
+                    <small>${v.data}</small><br><b>${v.cl_f}</b>
+                    <div style="font-size:0.8rem; color:#666; margin-top:5px">🌱 DAP: ${v.dap} | 🌧️ ${v.chuva}mm</div>
+                    ${v.calc_sem !== '--' ? `<div style="font-size:0.8rem; color:#0d47a1; background:#e3f2fd; padding:3px; margin-top:3px">📐 ${v.calc_sem} sem/m | ${v.calc_dist}cm</div>` : ''}
                     <div style="color:#d32f2f;font-weight:bold;margin-top:5px">${v.diag}</div>
-                    ${v.gps ? '<small>📍 GPS Gravado</small><br>' : ''}
-                    <div class="actions">
-                        <button class="btn-zap" onclick="window.open('https://wa.me/?text=${zap}')">📲 Enviar Zap</button>
-                        <button class="btn-del-mini" onclick="delVis(${v.id})">🗑️</button>
-                    </div>
+                    ${v.prod ? `<div style="background:#eee;padding:5px;font-size:0.8rem;margin-top:5px">💊 ${v.prod}</div>` : ''}
+                    <div class="actions"><button class="btn-zap" onclick="window.open('https://wa.me/?text=${zap}')">📲 Enviar Zap</button><button class="btn-del-mini" onclick="delVis(${v.id})">🗑️</button></div>
                 </div>`;
             });
         }
     }
 
-    function abrirPasta(nomeCli) {
-        clienteAtual = nomeCli;
-        renderHist();
-    }
-
-    function fecharPasta() {
-        clienteAtual = null;
-        renderHist();
-    }
-
     // AÇÕES
-    function addCli() {
-        let n=val('c_nome'), f=val('c_faz'), e=val('c_end'), c=val('c_cid'), u=val('c_uf');
-        if(n&&f&&c) {
-            clientes.push({n,f,e,c,u:u.toUpperCase()});
-            localStorage.setItem(DB_CLI, JSON.stringify(clientes));
-            alert('Salvo!');
-            ['c_nome','c_faz','c_end','c_cid','c_uf'].forEach(i=>document.getElementById(i).value='');
-            renderCli();
-        } else alert('Preencha campos principais');
-    }
-    function delCli(i) { if(confirm('Apagar?')) { clientes.splice(i,1); localStorage.setItem(DB_CLI, JSON.stringify(clientes)); renderCli(); } }
-
-    function addDiag() {
-        let c=val('d_cat'), n=val('d_nome'), d=val('d_dica');
-        if(n&&d) {
-            diagnosticos.push({c,n,d});
-            localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos));
-            alert('Salvo!');
-            document.getElementById('d_nome').value='';
-            document.getElementById('d_dica').value='';
-            renderDiag();
-        } else alert('Preencha dados');
-    }
-    function delDiag(i) { if(confirm('Apagar?')) { diagnosticos.splice(i,1); localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos)); renderDiag(); } }
-
     function salvarVisita() {
         let idx=val('v_cli'), fase=val('v_fase'), diagN=val('v_diag'), obs=val('v_obs');
+        let dap = calcDAP(); let chuva = val('v_chuva') || "0"; let prod = val('v_prod') || "";
+        
+        // Dados da Calculadora
+        let calc_sem = document.getElementById('r_sem').innerText;
+        let calc_dist = document.getElementById('r_dist').innerText;
+
         if(!idx || !fase || !diagN) return alert('Preencha Cliente, Fase e Diagnóstico');
         let cli = clientes[idx];
         let diag = diagnosticos.find(d=>d.n===diagN);
         
         visitas.unshift({
-            id: Date.now(), // ID único para apagar corretamente
-            data: new Date().toLocaleDateString(),
+            id: Date.now(), data: new Date().toLocaleDateString(),
             cl_n: cli.n, cl_f: cli.f, cl_e: cli.e, cl_c: cli.c, cl_u: cli.u,
-            fase, diag: diagN, dica: diag?diag.d:'', obs, gps, ft: temFoto
+            fase, diag: diagN, dica: diag?diag.d:'', obs, gps, ft: temFoto,
+            dap, chuva, prod, calc_sem, calc_dist
         });
         
         localStorage.setItem(DB_VIS, JSON.stringify(visitas));
-        alert('Visita Salva!');
-        
+        alert('Salvo!');
         // Reset
-        document.getElementById('v_diag').value='';
-        document.getElementById('v_obs').value='';
-        document.getElementById('v_dica').style.display='none';
-        document.getElementById('gps_status').style.display='none';
-        document.getElementById('foto_prev').style.display='none';
-        document.getElementById('foto_msg').style.display='block';
+        ['v_diag','v_obs','v_prod','v_chuva','c_esp','c_pop'].forEach(i=>document.getElementById(i).value='');
+        document.getElementById('r_sem').innerText='--'; document.getElementById('r_dist').innerText='--';
+        document.getElementById('v_dica').style.display='none'; document.getElementById('gps_status').style.display='none';
+        document.getElementById('foto_prev').style.display='none'; document.getElementById('foto_msg').style.display='block';
         gps=null; temFoto=false;
-
-        // Vai para a pasta do cliente
-        go(2, document.querySelectorAll('.nav-item')[1]);
-        abrirPasta(cli.n);
+        go(2, document.querySelectorAll('.nav-item')[1]); abrirPasta(cli.n);
     }
 
-    function delVis(id) {
-        if(confirm('Tem certeza que deseja apagar esta visita?')) {
-            visitas = visitas.filter(v => v.id !== id);
-            localStorage.setItem(DB_VIS, JSON.stringify(visitas));
-            renderHist();
-        }
-    }
+    // GESTÃO
+    function abrirPasta(n) { clienteAtual=n; renderHist(); }
+    function fecharPasta() { clienteAtual=null; renderHist(); }
+    function delVis(id) { if(confirm('Apagar?')) { visitas=visitas.filter(v=>v.id!==id); localStorage.setItem(DB_VIS, JSON.stringify(visitas)); renderHist(); } }
+    function addCli() { let n=val('c_nome'), f=val('c_faz'), e=val('c_end'), c=val('c_cid'), u=val('c_uf'); if(n&&f&&c) { clientes.push({n,f,e,c,u:u.toUpperCase()}); localStorage.setItem(DB_CLI, JSON.stringify(clientes)); alert('Salvo!'); renderCli(); ['c_nome','c_faz','c_end','c_cid','c_uf'].forEach(i=>document.getElementById(i).value=''); } else alert('Dados incompletos'); }
+    function delCli(i) { if(confirm('Apagar?')) { clientes.splice(i,1); localStorage.setItem(DB_CLI, JSON.stringify(clientes)); renderCli(); } }
+    function addDiag() { let c=val('d_cat'), n=val('d_nome'), d=val('d_dica'); if(n&&d) { diagnosticos.push({c,n,d}); localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos)); alert('Salvo!'); renderDiag(); document.getElementById('d_nome').value=''; } else alert('Dados incompletos'); }
+    function delDiag(i) { if(confirm('Apagar?')) { diagnosticos.splice(i,1); localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos)); renderDiag(); } }
 
     // UTILS
-    function pegarGPS() {
-        let s = document.getElementById('gps_status');
-        s.style.display='block'; s.innerText='Buscando...';
-        navigator.geolocation.getCurrentPosition(
-            p=>{gps={lat:p.coords.latitude, lng:p.coords.longitude}; s.innerText='✅ Capturado!';},
-            e=>{s.innerText='Erro GPS';}
-        );
-    }
-    function lerFoto(input) {
-        if(input.files[0]) {
-            let r=new FileReader();
-            r.onload=e=>{
-                document.getElementById('foto_prev').src=e.target.result;
-                document.getElementById('foto_prev').style.display='block';
-                document.getElementById('foto_msg').style.display='none';
-                temFoto=true;
-            };
-            r.readAsDataURL(input.files[0]);
-        }
-    }
-    function mostrarDica() {
-        let n=val('v_diag'), d=diagnosticos.find(x=>x.n===n), div=document.getElementById('v_dica');
-        if(d) { div.style.display='block'; div.innerText="💡 "+d.d; } else div.style.display='none';
-    }
-    function exportar() {
-        let t="DATA;CLIENTE;CIDADE;PROBLEMA\n";
-        visitas.forEach(v=>t+=`${v.data};${v.cl_n};${v.cl_c};${v.diag}\n`);
-        window.open(`https://wa.me/?text=${encodeURIComponent("DADOS GERAIS:\n"+t)}`);
-    }
+    function pegarGPS() { let s=document.getElementById('gps_status'); s.style.display='block'; s.innerText='Buscando...'; navigator.geolocation.getCurrentPosition(p=>{gps={lat:p.coords.latitude, lng:p.coords.longitude}; s.innerText='✅ OK';}, e=>{s.innerText='Erro GPS';}); }
+    function lerFoto(i) { if(i.files[0]) { let r=new FileReader(); r.onload=e=>{document.getElementById('foto_prev').src=e.target.result;document.getElementById('foto_prev').style.display='block';document.getElementById('foto_msg').style.display='none';temFoto=true;};r.readAsDataURL(i.files[0]); } }
+    function mostrarDica() { let n=val('v_diag'), d=diagnosticos.find(x=>x.n===n), div=document.getElementById('v_dica'); if(d){div.style.display='block';div.innerText="💡 "+d.d;}else div.style.display='none'; }
+    function exportar() { let t="DATA;CLIENTE;DAP;CHUVA;PROBLEMA\n"; visitas.forEach(v=>t+=`${v.data};${v.cl_n};${v.dap};${v.chuva};${v.diag}\n`); window.open(`https://wa.me/?text=${encodeURIComponent("DADOS:\n"+t)}`); }
     function val(id) { return document.getElementById(id).value; }
-    function go(n, el) {
-        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-        document.getElementById('tab'+n).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
-        el.classList.add('active');
-        if(n===2 && clienteAtual===null) renderHist(); // Recarrega lista
-    }
+    function go(n, el) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); document.getElementById('tab'+n).classList.add('active'); document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active')); el.classList.add('active'); if(n===2&&clienteAtual===null) renderHist(); }
 </script>
 </body>
 </html>
