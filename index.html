@@ -4,54 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1b5e20">
-    <title>AgroRTR v14</title>
+    <title>AgroRTR v15 Final</title>
     <style>
-        :root { --p: #2e7d32; --d: #1b5e20; --r: #d32f2f; }
+        :root { --primary: #2e7d32; --dark: #1b5e20; --bg: #f4f4f4; --danger: #d32f2f; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, sans-serif; background: #f4f4f4; margin: 0; padding-bottom: 90px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 100px; }
         .app { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; }
         
         /* Header */
-        .head { background: var(--d); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 999; }
+        .head { background: var(--dark); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .head h1 { margin: 0; font-size: 1.2rem; }
         
         /* Tabs */
-        .tab { display: none; padding: 15px; }
+        .tab { display: none; padding: 15px; animation: fadeIn 0.3s; }
         .active { display: block; }
+        @keyframes fadeIn { from{opacity:0}to{opacity:1} }
 
-        /* Card */
+        /* Components */
         .card { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card h3 { margin: 0 0 10px 0; color: var(--d); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-
-        /* Inputs */
-        label { display: block; margin-top: 12px; font-weight: bold; font-size: 0.8rem; color: #333; text-transform: uppercase; }
+        .card h3 { margin: 0 0 10px 0; color: var(--dark); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        
+        label { display: block; margin-top: 12px; font-weight: bold; font-size: 0.8rem; color: #444; text-transform: uppercase; }
         input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; background: #fafafa; }
         
-        /* Grid */
         .row { display: flex; gap: 10px; }
         .col { flex: 1; }
 
         /* Buttons */
         button { width: 100%; padding: 15px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        .btn-main { background: var(--p); color: white; }
+        .btn-main { background: var(--primary); color: white; }
         .btn-sec { background: #eee; color: #333; border: 1px solid #ccc; }
         .btn-zap { background: #25D366; color: white; }
-        .btn-del { background: #ffebee; color: var(--r); padding: 8px; font-size: 0.8rem; margin-top:0; width:auto;}
+        .btn-del { background: #ffebee; color: var(--danger); padding: 8px; width: auto; margin: 0; font-size: 0.8rem; }
+        .btn-gps { background: white; border: 1px dashed var(--primary); color: var(--dark); display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* Features */
+        .foto-box { height: 180px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; margin-top: 5px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .foto-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .foto-box input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; }
         
+        .dica { background: #fff3e0; padding: 10px; border-left: 4px solid orange; margin-top: 10px; font-size: 0.9rem; display: none; }
+        
+        /* Lists */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+
         /* Nav */
-        .nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: white; border-top: 1px solid #ddd; display: flex; z-index: 1000; }
+        .nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: white; border-top: 1px solid #ddd; display: flex; z-index: 2000; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; color: #999; }
-        .nav-item.active { color: var(--p); font-weight: 800; }
-        .icon { font-size: 1.4rem; }
+        .nav-item.active { color: var(--primary); font-weight: 800; }
+        .icon { font-size: 1.5rem; margin-bottom: 2px; }
     </style>
 </head>
 <body>
 
 <div class="app">
     <div class="head">
-        <h1>🌱 AgroRTR v14</h1>
+        <h1>🌱 AgroRTR v15</h1>
     </div>
 
-    <div id="t1" class="tab active">
+    <div id="tab1" class="tab active">
         <div class="card">
             <h3>Nova Visita</h3>
             
@@ -65,206 +76,273 @@
                 <optgroup label="Reprodutivo"><option value="R1">R1 (Polinização)</option><option value="R2-R3">R2-R3</option><option value="R6">R6 (Maturidade)</option></optgroup>
             </select>
 
-            <label>🐛 Diagnóstico</label>
-            <select id="v_diag" onchange="showDica()"><option value="">Selecione...</option></select>
-            <div id="v_dica" style="display:none; background:#fff3e0; padding:10px; margin-top:5px; border-left:4px solid orange; font-size:0.9rem"></div>
+            <label>📡 GPS (Localização)</label>
+            <div id="gps_status" style="font-size:0.8rem; color:green; display:none; margin-bottom:5px"></div>
+            <button class="btn-gps" onclick="pegarGPS()">📍 Capturar Ponto GPS</button>
 
-            <label>📝 Obs</label>
+            <label>📷 Foto</label>
+            <div class="foto-box">
+                <span id="foto_msg">📸 Toque para Foto</span>
+                <img id="foto_prev">
+                <input type="file" accept="image/*" capture="environment" onchange="lerFoto(this)">
+            </div>
+
+            <label>🐛 Diagnóstico</label>
+            <select id="v_diag" onchange="mostrarDica()"><option value="">Selecione...</option></select>
+            <div id="v_dica" class="dica"></div>
+
+            <label>📝 Observação</label>
             <textarea id="v_obs" rows="2"></textarea>
 
-            <button class="btn-main" onclick="saveVisit()">💾 SALVAR VISITA</button>
+            <button class="btn-main" onclick="salvarVisita()">💾 SALVAR REGISTRO</button>
         </div>
     </div>
 
-    <div id="t2" class="tab">
+    <div id="tab2" class="tab">
         <div class="card">
             <h3>Visitas Recentes</h3>
             <div id="list_vis"></div>
         </div>
     </div>
 
-    <div id="t3" class="tab">
+    <div id="tab3" class="tab">
         <div class="card">
             <h3>👥 Novo Cliente</h3>
-            
-            <label>Nome do Produtor</label>
-            <input id="c_nome" placeholder="Ex: João Silva">
-            
-            <label>Nome da Fazenda</label>
-            <input id="c_faz" placeholder="Ex: Fazenda Santa Fé">
-            
-            <label>Endereço / Rodovia</label>
-            <input id="c_end" placeholder="Ex: Rod. PR-323, Km 5">
-            
+            <label>Nome</label><input id="c_nome" placeholder="Produtor">
+            <label>Fazenda</label><input id="c_faz" placeholder="Propriedade">
+            <label>Endereço</label><input id="c_end" placeholder="Rodovia / Estrada">
             <div class="row">
-                <div class="col">
-                    <label>Cidade</label>
-                    <input id="c_cid" placeholder="Ex: Maringá">
-                </div>
-                <div class="col">
-                    <label>UF</label>
-                    <input id="c_uf" placeholder="PR" maxlength="2" style="text-transform:uppercase">
-                </div>
+                <div class="col"><label>Cidade</label><input id="c_cid"></div>
+                <div class="col"><label>UF</label><input id="c_uf" style="text-transform:uppercase" maxlength="2"></div>
             </div>
-
             <button class="btn-sec" onclick="addCli()">+ Cadastrar</button>
         </div>
-
+        
         <div class="card">
             <h3>Lista de Clientes</h3>
             <div id="list_cli"></div>
         </div>
-        
-        <button class="btn-main" style="background:#000" onclick="exportData()">📤 Exportar Dados (Zap)</button>
-        <button onclick="if(confirm('Zerar tudo?')) {localStorage.clear(); location.reload();}" style="background:#ffebee; color:red; margin-top:20px; font-size:0.8rem">🗑️ Resetar App</button>
+
+        <div class="card">
+            <h3>📚 Adicionar à Biblioteca</h3>
+            <label>Categoria</label>
+            <select id="d_cat">
+                <option value="PRAGAS">Pragas</option>
+                <option value="DOENÇAS">Doenças</option>
+                <option value="NUTRIÇÃO">Nutrição</option>
+                <option value="DANINHAS">Daninhas</option>
+                <option value="OUTROS">Outros</option>
+            </select>
+            <label>Nome do Problema</label><input id="d_nome" placeholder="Ex: Pulgão">
+            <label>Dica Técnica</label><input id="d_dica" placeholder="Ex: Monitorar e aplicar...">
+            <button class="btn-sec" onclick="addDiag()">+ Adicionar Item</button>
+        </div>
+
+        <div class="card">
+            <h3>Itens da Biblioteca</h3>
+            <div id="list_diag"></div>
+        </div>
+
+        <div class="card">
+            <button class="btn-main" style="background:#000" onclick="exportar()">📤 Relatório Geral (Zap)</button>
+            <button onclick="if(confirm('Zerar tudo?')) {localStorage.clear(); location.reload();}" style="background:#ffebee; color:red; margin-top:15px; width:100%; border:1px solid red; padding:10px; border-radius:6px">🗑️ Resetar App</button>
+        </div>
     </div>
 
     <div class="nav">
-        <div class="nav-item active" onclick="go(1,this)"><span class="icon">🌾</span>Vistoria</div>
-        <div class="nav-item" onclick="go(2,this)"><span class="icon">📋</span>Histórico</div>
-        <div class="nav-item" onclick="go(3,this)"><span class="icon">⚙️</span>Gestão</div>
+        <div class="nav-item active" onclick="go(1,this)"><div class="icon">🌾</div>Vistoria</div>
+        <div class="nav-item" onclick="go(2,this)"><div class="icon">📋</div>Histórico</div>
+        <div class="nav-item" onclick="go(3,this)"><div class="icon">⚙️</div>Gestão</div>
     </div>
 </div>
 
 <script>
-    // --- DADOS ---
-    const DB_CLI = 'rtr_cli_v14', DB_VIS = 'rtr_vis_v14'; // Versão Nova (v14)
+    // --- CHAVE NOVA (v15) PARA LIMPAR ERROS ANTIGOS ---
+    const DB_CLI='rtr_c_v15', DB_DIAG='rtr_d_v15', DB_VIS='rtr_v_v15';
     
-    // ENCICLOPÉDIA (20 ITENS)
-    const DIAGS = [
-        {c:"PRAGAS", n:"Cigarrinha (Dalbulus)", d:"Vetor de Enfezamentos. Controle urgente."},
-        {c:"PRAGAS", n:"Lagarta-do-Cartucho", d:"Monitorar raspagem. Nível 20%."},
-        {c:"PRAGAS", n:"Percevejo Barriga-Verde", d:"Dano no colmo. Tratamento semente."},
-        {c:"PRAGAS", n:"Pulgão", d:"Sucção de seiva. Monitorar."},
-        {c:"PRAGAS", n:"Larva Alfinete", d:"Dano na raiz."},
+    // VARIÁVEIS TEMPORÁRIAS
+    let gps = null, temFoto = false;
+
+    // DADOS INICIAIS (PADRÃO)
+    const defCli = [{n:"Manoel", f:"Fazenda Modelo", e:"Est. Cerne Km 10", c:"Curitiba", u:"PR"}];
+    const defDiag = [
+        {c:"PRAGAS", n:"Cigarrinha", d:"Vetor de Enfezamentos. Controle urgente."},
+        {c:"PRAGAS", n:"Lagarta Cartucho", d:"Nível de dano 20%."},
+        {c:"PRAGAS", n:"Percevejo", d:"Dano no colmo. Tratamento semente."},
         {c:"DOENÇAS", n:"Mancha Branca", d:"Fungicida sistêmico."},
-        {c:"DOENÇAS", n:"Ferrugem Polissora", d:"Preventivo clima quente."},
-        {c:"DOENÇAS", n:"Enfezamento Vermelho", d:"Sem cura. Controle vetor."},
-        {c:"DOENÇAS", n:"Enfezamento Pálido", d:"Sem cura. Controle vetor."},
-        {c:"DOENÇAS", n:"Cercosporiose", d:"Monitorar híbridos."},
+        {c:"DOENÇAS", n:"Ferrugem", d:"Preventivo clima quente."},
         {c:"NUTRIÇÃO", n:"Def. Nitrogênio", d:"Amarelado em V. Ureia."},
         {c:"NUTRIÇÃO", n:"Def. Potássio", d:"Queima bordas."},
-        {c:"NUTRIÇÃO", n:"Def. Fósforo", d:"Folhas roxas."},
-        {c:"NUTRIÇÃO", n:"Def. Zinco", d:"Faixas brancas."},
-        {c:"NUTRIÇÃO", n:"Def. Magnésio", d:"Estrias brancas."},
-        {c:"DANINHAS", n:"Buva", d:"Resistente glifosato."},
-        {c:"DANINHAS", n:"Amargoso", d:"Graminicida."},
-        {c:"DANINHAS", n:"Tiguera", d:"Eliminar (ponte verde)."},
-        {c:"OUTROS", n:"Estresse Hídrico", d:"Folhas encartuchadas."},
-        {c:"OUTROS", n:"Sem Problemas", d:"Lavoura sadia."}
+        {c:"DANINHAS", n:"Buva", d:"Resistente glifosato."}
     ];
 
+    // CARREGAR DADOS
     let clientes = JSON.parse(localStorage.getItem(DB_CLI) || '[]');
+    let diagnosticos = JSON.parse(localStorage.getItem(DB_DIAG) || '[]');
     let visitas = JSON.parse(localStorage.getItem(DB_VIS) || '[]');
 
-    // Se vazio, cria exemplo completo
-    if(clientes.length === 0) {
-        clientes.push({n:"Manoel", f:"Fazenda Modelo", e:"Est. Cerne, Km 10", c:"Curitiba", u:"PR"});
-        localStorage.setItem(DB_CLI, JSON.stringify(clientes));
+    // SE VAZIO, CARREGA PADRÃO
+    if(clientes.length===0) { clientes=defCli; localStorage.setItem(DB_CLI, JSON.stringify(clientes)); }
+    if(diagnosticos.length===0) { diagnosticos=defDiag; localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos)); }
+
+    window.onload = renderTudo;
+
+    function renderTudo() {
+        renderCli();
+        renderDiag();
+        renderVis();
     }
 
-    // --- INICIAR ---
-    window.onload = renderAll;
-
-    function renderAll() {
-        // Select Cliente
+    // --- RENDERIZADORES ---
+    function renderCli() {
+        // Select da Vistoria
         let sel = document.getElementById('v_cli');
         sel.innerHTML = '<option value="">Selecione...</option>';
         clientes.forEach((c,i) => sel.innerHTML += `<option value="${i}">${c.n} - ${c.f}</option>`);
 
-        // Select Diagnósticos
-        let selD = document.getElementById('v_diag');
-        selD.innerHTML = '<option value="">Selecione...</option>';
-        let cats = [...new Set(DIAGS.map(d=>d.c))];
-        cats.forEach(cat => {
-            let g = document.createElement('optgroup'); g.label = cat;
-            DIAGS.filter(d=>d.c===cat).forEach(d => {
-                let o = document.createElement('option'); o.value = d.n; o.innerText = d.n; g.appendChild(o);
-            });
-            selD.appendChild(g);
-        });
-
-        // Lista Clientes
-        let lc = document.getElementById('list_cli');
-        lc.innerHTML = '';
+        // Lista da Gestão
+        let list = document.getElementById('list_cli');
+        list.innerHTML = '';
         clientes.forEach((c,i) => {
-            lc.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee">
-                <div><b>${c.n}</b><br><small>${c.f}<br>📍 ${c.c}-${c.u}</small></div>
-                <button class="btn-del" onclick="delCli(${i})">🗑️</button>
-            </div>`;
+            list.innerHTML += `<div class="list-item"><div><b>${c.n}</b><br><small>${c.f} (${c.c}/${c.u})</small></div><button class="btn-del" onclick="delCli(${i})">🗑️</button></div>`;
+        });
+    }
+
+    function renderDiag() {
+        // Select da Vistoria
+        let sel = document.getElementById('v_diag');
+        sel.innerHTML = '<option value="">Selecione...</option>';
+        let cats = [...new Set(diagnosticos.map(d=>d.c))];
+        cats.forEach(cat => {
+            let grp = document.createElement('optgroup'); grp.label = cat;
+            diagnosticos.filter(d=>d.c===cat).forEach(d => {
+                let opt = document.createElement('option'); opt.value = d.n; opt.innerText = d.n; grp.appendChild(opt);
+            });
+            sel.appendChild(grp);
         });
 
-        // Lista Visitas
-        let lv = document.getElementById('list_vis');
-        lv.innerHTML = visitas.length ? '' : '<p style="text-align:center;color:#999">Vazio</p>';
+        // Lista da Gestão
+        let list = document.getElementById('list_diag');
+        list.innerHTML = '';
+        diagnosticos.forEach((d,i) => {
+            list.innerHTML += `<div class="list-item"><div><b>${d.n}</b> <small>${d.c}</small></div><button class="btn-del" onclick="delDiag(${i})">🗑️</button></div>`;
+        });
+    }
+
+    function renderVis() {
+        let list = document.getElementById('list_vis');
+        list.innerHTML = visitas.length ? '' : '<p style="text-align:center;color:#999">Vazio</p>';
         visitas.forEach(v => {
-            let zap = `📋 *RELATÓRIO*%0A👤 ${v.cli_n}%0A🚜 ${v.cli_f}%0A📍 ${v.cli_c}-${v.cli_u}%0A🌽 ${v.fase}%0A🚨 ${v.diag}%0A📝 ${v.obs}`;
-            lv.innerHTML += `<div class="card" style="border-left:4px solid green">
-                <b>${v.cli_n}</b> <small>${v.data}</small><br>
-                <small>${v.cli_f} (${v.cli_c})</small>
-                <div style="color:red; font-weight:bold; margin-top:5px">${v.diag}</div>
-                <button class="btn-zap" style="padding:10px; margin-top:5px" onclick="window.open('https://wa.me/?text=${zap}')">Enviar Zap</button>
+            let mapa = v.gps ? `http://maps.google.com/?q=${v.gps.lat},${v.gps.lng}` : '';
+            let zap = `📋 *RELATÓRIO*%0A👤 ${v.cl_n} - ${v.cl_f}%0A📍 ${v.cl_e}, ${v.cl_c}/${v.cl_u}%0A🌽 ${v.fase}%0A🚨 ${v.diag}%0A💡 ${v.dica}%0A📝 ${v.obs}`;
+            if(mapa) zap += `%0A🗺️ Mapa: ${mapa}`;
+            if(v.ft) zap += `%0A📷 [FOTO EM ANEXO]`;
+
+            list.innerHTML += `<div class="card" style="border-left:4px solid green">
+                <b>${v.cl_n}</b> <small>${v.data}</small><br>
+                <small>${v.cl_f}</small>
+                <div style="color:#d32f2f;font-weight:bold;margin-top:5px">${v.diag}</div>
+                ${v.gps ? '<small>📍 GPS Gravado</small><br>' : ''}
+                <button class="btn-zap" style="padding:10px;margin-top:5px" onclick="window.open('https://wa.me/?text=${zap}')">Enviar Zap</button>
             </div>`;
         });
     }
 
-    // --- FUNÇÕES ---
+    // --- AÇÕES ---
     function addCli() {
         let n=val('c_nome'), f=val('c_faz'), e=val('c_end'), c=val('c_cid'), u=val('c_uf');
-        if(n && f && c) {
-            clientes.push({n, f, e, c, u: u.toUpperCase()});
+        if(n&&f&&c) {
+            clientes.push({n,f,e,c,u:u.toUpperCase()});
             localStorage.setItem(DB_CLI, JSON.stringify(clientes));
-            alert('Cliente Cadastrado!');
-            ['c_nome','c_faz','c_end','c_cid','c_uf'].forEach(id=>document.getElementById(id).value='');
-            renderAll();
-        } else alert('Preencha Nome, Fazenda e Cidade!');
+            alert('Cliente Salvo!');
+            ['c_nome','c_faz','c_end','c_cid','c_uf'].forEach(i=>document.getElementById(i).value='');
+            renderCli();
+        } else alert('Preencha Nome, Fazenda e Cidade');
     }
 
-    function delCli(i) {
-        if(confirm('Apagar?')) {
-            clientes.splice(i,1);
-            localStorage.setItem(DB_CLI, JSON.stringify(clientes));
-            renderAll();
-        }
+    function delCli(i) { if(confirm('Apagar?')) { clientes.splice(i,1); localStorage.setItem(DB_CLI, JSON.stringify(clientes)); renderCli(); } }
+
+    function addDiag() {
+        let c=val('d_cat'), n=val('d_nome'), d=val('d_dica');
+        if(n&&d) {
+            diagnosticos.push({c,n,d});
+            localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos));
+            alert('Item Salvo!');
+            document.getElementById('d_nome').value='';
+            document.getElementById('d_dica').value='';
+            renderDiag();
+        } else alert('Preencha Nome e Dica');
     }
 
-    function saveVisit() {
-        let idx = val('v_cli'), fase = val('v_fase'), diagN = val('v_diag'), obs = val('v_obs');
-        if(!idx || !fase || !diagN) return alert('Preencha Cliente, Fase e Diagnóstico!');
-        
+    function delDiag(i) { if(confirm('Apagar?')) { diagnosticos.splice(i,1); localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos)); renderDiag(); } }
+
+    function salvarVisita() {
+        let idx=val('v_cli'), fase=val('v_fase'), diagN=val('v_diag'), obs=val('v_obs');
+        if(!idx || !fase || !diagN) return alert('Preencha Cliente, Fase e Diagnóstico');
+
         let cli = clientes[idx];
+        let diag = diagnosticos.find(d=>d.n===diagN);
+
         visitas.unshift({
             data: new Date().toLocaleDateString(),
-            cli_n: cli.n, cli_f: cli.f, cli_e: cli.e, cli_c: cli.c, cli_u: cli.u,
-            fase, diag: diagN, obs
+            cl_n: cli.n, cl_f: cli.f, cl_e: cli.e, cl_c: cli.c, cl_u: cli.u,
+            fase, diag: diagN, dica: diag?diag.d:'', obs, gps, ft: temFoto
         });
+
         localStorage.setItem(DB_VIS, JSON.stringify(visitas));
-        alert('Salvo!');
-        document.getElementById('v_diag').value = '';
-        document.getElementById('v_obs').value = '';
-        renderAll();
+        alert('Visita Salva!');
+        
+        // Reset
+        document.getElementById('v_diag').value='';
+        document.getElementById('v_obs').value='';
+        document.getElementById('v_dica').style.display='none';
+        document.getElementById('gps_status').style.display='none';
+        document.getElementById('foto_prev').style.display='none';
+        document.getElementById('foto_msg').style.display='block';
+        gps=null; temFoto=false;
+
+        renderVis();
         go(2, document.querySelectorAll('.nav-item')[1]);
     }
 
-    function showDica() {
-        let n = val('v_diag');
-        let d = DIAGS.find(x=>x.n===n);
-        let div = document.getElementById('v_dica');
-        if(d) { div.style.display='block'; div.innerText = "💡 " + d.d; }
-        else div.style.display='none';
+    // UTILS
+    function pegarGPS() {
+        let s = document.getElementById('gps_status');
+        s.style.display='block'; s.innerText='Buscando...';
+        navigator.geolocation.getCurrentPosition(
+            p=>{gps={lat:p.coords.latitude, lng:p.coords.longitude}; s.innerText='✅ Capturado!';},
+            e=>{s.innerText='Erro GPS';}
+        );
     }
 
-    function exportData() {
-        let t = "DATA;CLIENTE;FAZENDA;CIDADE;PROBLEMA\n";
-        visitas.forEach(v => t += `${v.data};${v.cli_n};${v.cli_f};${v.cli_c};${v.diag}\n`);
+    function lerFoto(input) {
+        if(input.files[0]) {
+            let r=new FileReader();
+            r.onload=e=>{
+                document.getElementById('foto_prev').src=e.target.result;
+                document.getElementById('foto_prev').style.display='block';
+                document.getElementById('foto_msg').style.display='none';
+                temFoto=true;
+            };
+            r.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function mostrarDica() {
+        let n=val('v_diag'), d=diagnosticos.find(x=>x.n===n), div=document.getElementById('v_dica');
+        if(d) { div.style.display='block'; div.innerText="💡 "+d.d; } else div.style.display='none';
+    }
+
+    function exportar() {
+        let t="DATA;CLIENTE;CIDADE;PROBLEMA\n";
+        visitas.forEach(v=>t+=`${v.data};${v.cl_n};${v.cl_c};${v.diag}\n`);
         window.open(`https://wa.me/?text=${encodeURIComponent("DADOS GERAIS:\n"+t)}`);
     }
 
     function val(id) { return document.getElementById(id).value; }
-    
     function go(n, el) {
         document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-        document.getElementById('t'+n).classList.add('active');
+        document.getElementById('tab'+n).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
         el.classList.add('active');
     }
