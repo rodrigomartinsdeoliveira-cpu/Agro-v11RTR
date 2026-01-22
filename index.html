@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1b5e20">
-    <title>AgroRTR v15 Final</title>
+    <title>AgroRTR v18</title>
     <style>
-        :root { --primary: #2e7d32; --dark: #1b5e20; --bg: #f4f4f4; --danger: #d32f2f; }
+        :root { --primary: #2e7d32; --dark: #1b5e20; --bg: #f4f4f4; --danger: #d32f2f; --gray: #eceff1; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 100px; }
         .app { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; }
@@ -20,7 +20,7 @@
         .active { display: block; }
         @keyframes fadeIn { from{opacity:0}to{opacity:1} }
 
-        /* Components */
+        /* Card & Inputs */
         .card { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .card h3 { margin: 0 0 10px 0; color: var(--dark); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         
@@ -34,9 +34,11 @@
         button { width: 100%; padding: 15px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
         .btn-main { background: var(--primary); color: white; }
         .btn-sec { background: #eee; color: #333; border: 1px solid #ccc; }
-        .btn-zap { background: #25D366; color: white; }
+        .btn-zap { background: #25D366; color: white; flex: 1; }
+        .btn-del-mini { background: #ffebee; color: var(--danger); border: 1px solid #ffcdd2; width: 50px; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
         .btn-del { background: #ffebee; color: var(--danger); padding: 8px; width: auto; margin: 0; font-size: 0.8rem; }
         .btn-gps { background: white; border: 1px dashed var(--primary); color: var(--dark); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-back { background: #546e7a; color: white; margin-bottom: 15px; display: none; } /* Botão Voltar */
 
         /* Features */
         .foto-box { height: 180px; background: #eee; border: 2px dashed #ccc; border-radius: 8px; margin-top: 5px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
@@ -44,9 +46,14 @@
         .foto-box input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; }
         
         .dica { background: #fff3e0; padding: 10px; border-left: 4px solid orange; margin-top: 10px; font-size: 0.9rem; display: none; }
-        
-        /* Lists */
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .actions { display: flex; gap: 10px; margin-top: 10px; }
+
+        /* Folder Style (Pastas de Cliente) */
+        .folder { padding: 15px; background: var(--gray); border-radius: 8px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .folder:active { background: #cfd8dc; }
+        .folder-name { font-weight: bold; color: var(--dark); }
+        .folder-count { background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; }
 
         /* Nav */
         .nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: white; border-top: 1px solid #ddd; display: flex; z-index: 2000; }
@@ -59,7 +66,7 @@
 
 <div class="app">
     <div class="head">
-        <h1>🌱 AgroRTR v15</h1>
+        <h1>🌱 AgroRTR v18</h1>
     </div>
 
     <div id="tab1" class="tab active">
@@ -76,7 +83,7 @@
                 <optgroup label="Reprodutivo"><option value="R1">R1 (Polinização)</option><option value="R2-R3">R2-R3</option><option value="R6">R6 (Maturidade)</option></optgroup>
             </select>
 
-            <label>📡 GPS (Localização)</label>
+            <label>📡 GPS</label>
             <div id="gps_status" style="font-size:0.8rem; color:green; display:none; margin-bottom:5px"></div>
             <button class="btn-gps" onclick="pegarGPS()">📍 Capturar Ponto GPS</button>
 
@@ -100,7 +107,8 @@
 
     <div id="tab2" class="tab">
         <div class="card">
-            <h3>Visitas Recentes</h3>
+            <h3 id="hist_title">Pasta de Clientes</h3>
+            <button id="btn_back" class="btn-back" onclick="fecharPasta()">⬅️ Voltar para Lista</button>
             <div id="list_vis"></div>
         </div>
     </div>
@@ -133,8 +141,8 @@
                 <option value="DANINHAS">Daninhas</option>
                 <option value="OUTROS">Outros</option>
             </select>
-            <label>Nome do Problema</label><input id="d_nome" placeholder="Ex: Pulgão">
-            <label>Dica Técnica</label><input id="d_dica" placeholder="Ex: Monitorar e aplicar...">
+            <label>Nome</label><input id="d_nome" placeholder="Ex: Percevejo">
+            <label>Dica</label><input id="d_dica" placeholder="Ex: Monitorar...">
             <button class="btn-sec" onclick="addDiag()">+ Adicionar Item</button>
         </div>
 
@@ -157,16 +165,16 @@
 </div>
 
 <script>
-    // --- CHAVE NOVA (v15) PARA LIMPAR ERROS ANTIGOS ---
-    const DB_CLI='rtr_c_v15', DB_DIAG='rtr_d_v15', DB_VIS='rtr_v_v15';
-    
-    // VARIÁVEIS TEMPORÁRIAS
+    // CHAVE v18
+    const DB_CLI='rtr_c_v18', DB_DIAG='rtr_d_v18', DB_VIS='rtr_v_v18';
     let gps = null, temFoto = false;
+    let clienteAtual = null; // Controla qual pasta está aberta
 
-    // DADOS INICIAIS (PADRÃO)
+    // DADOS PADRÃO
     const defCli = [{n:"Manoel", f:"Fazenda Modelo", e:"Est. Cerne Km 10", c:"Curitiba", u:"PR"}];
     const defDiag = [
-        {c:"PRAGAS", n:"Cigarrinha", d:"Vetor de Enfezamentos. Controle urgente."},
+        {c:"OUTROS", n:"✅ Planta Saudável", d:"Lavoura sadia. Manter monitoramento."},
+        {c:"PRAGAS", n:"Cigarrinha (Dalbulus)", d:"Vetor de Enfezamentos. Controle urgente."},
         {c:"PRAGAS", n:"Lagarta Cartucho", d:"Nível de dano 20%."},
         {c:"PRAGAS", n:"Percevejo", d:"Dano no colmo. Tratamento semente."},
         {c:"DOENÇAS", n:"Mancha Branca", d:"Fungicida sistêmico."},
@@ -176,12 +184,10 @@
         {c:"DANINHAS", n:"Buva", d:"Resistente glifosato."}
     ];
 
-    // CARREGAR DADOS
     let clientes = JSON.parse(localStorage.getItem(DB_CLI) || '[]');
     let diagnosticos = JSON.parse(localStorage.getItem(DB_DIAG) || '[]');
     let visitas = JSON.parse(localStorage.getItem(DB_VIS) || '[]');
 
-    // SE VAZIO, CARREGA PADRÃO
     if(clientes.length===0) { clientes=defCli; localStorage.setItem(DB_CLI, JSON.stringify(clientes)); }
     if(diagnosticos.length===0) { diagnosticos=defDiag; localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos)); }
 
@@ -190,17 +196,14 @@
     function renderTudo() {
         renderCli();
         renderDiag();
-        renderVis();
+        renderHist();
     }
 
-    // --- RENDERIZADORES ---
     function renderCli() {
-        // Select da Vistoria
         let sel = document.getElementById('v_cli');
         sel.innerHTML = '<option value="">Selecione...</option>';
         clientes.forEach((c,i) => sel.innerHTML += `<option value="${i}">${c.n} - ${c.f}</option>`);
 
-        // Lista da Gestão
         let list = document.getElementById('list_cli');
         list.innerHTML = '';
         clientes.forEach((c,i) => {
@@ -209,7 +212,6 @@
     }
 
     function renderDiag() {
-        // Select da Vistoria
         let sel = document.getElementById('v_diag');
         sel.innerHTML = '<option value="">Selecione...</option>';
         let cats = [...new Set(diagnosticos.map(d=>d.c))];
@@ -221,7 +223,6 @@
             sel.appendChild(grp);
         });
 
-        // Lista da Gestão
         let list = document.getElementById('list_diag');
         list.innerHTML = '';
         diagnosticos.forEach((d,i) => {
@@ -229,37 +230,89 @@
         });
     }
 
-    function renderVis() {
+    // --- NOVA LÓGICA DE HISTÓRICO (PASTAS) ---
+    function renderHist() {
         let list = document.getElementById('list_vis');
-        list.innerHTML = visitas.length ? '' : '<p style="text-align:center;color:#999">Vazio</p>';
-        visitas.forEach(v => {
-            let mapa = v.gps ? `http://maps.google.com/?q=${v.gps.lat},${v.gps.lng}` : '';
-            let zap = `📋 *RELATÓRIO*%0A👤 ${v.cl_n} - ${v.cl_f}%0A📍 ${v.cl_e}, ${v.cl_c}/${v.cl_u}%0A🌽 ${v.fase}%0A🚨 ${v.diag}%0A💡 ${v.dica}%0A📝 ${v.obs}`;
-            if(mapa) zap += `%0A🗺️ Mapa: ${mapa}`;
-            if(v.ft) zap += `%0A📷 [FOTO EM ANEXO]`;
+        let btn = document.getElementById('btn_back');
+        let title = document.getElementById('hist_title');
 
-            list.innerHTML += `<div class="card" style="border-left:4px solid green">
-                <b>${v.cl_n}</b> <small>${v.data}</small><br>
-                <small>${v.cl_f}</small>
-                <div style="color:#d32f2f;font-weight:bold;margin-top:5px">${v.diag}</div>
-                ${v.gps ? '<small>📍 GPS Gravado</small><br>' : ''}
-                <button class="btn-zap" style="padding:10px;margin-top:5px" onclick="window.open('https://wa.me/?text=${zap}')">Enviar Zap</button>
-            </div>`;
-        });
+        list.innerHTML = '';
+
+        if (clienteAtual === null) {
+            // MODO LISTA DE CLIENTES (PASTAS)
+            btn.style.display = 'none';
+            title.innerText = "Selecione o Cliente";
+            
+            // Pega clientes únicos que têm visitas
+            let clientesComVisita = [...new Set(visitas.map(v => v.cl_n))];
+            
+            if(clientesComVisita.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:#999;margin-top:20px">Nenhuma visita registrada.</p>';
+                return;
+            }
+
+            clientesComVisita.forEach(nomeCli => {
+                let count = visitas.filter(v => v.cl_n === nomeCli).length;
+                list.innerHTML += `
+                    <div class="folder" onclick="abrirPasta('${nomeCli}')">
+                        <span class="folder-name">📂 ${nomeCli}</span>
+                        <span class="folder-count">${count} visitas</span>
+                    </div>`;
+            });
+
+        } else {
+            // MODO DETALHE (VISITAS DO CLIENTE)
+            btn.style.display = 'block';
+            title.innerText = "Histórico: " + clienteAtual;
+            
+            let visitasFiltradas = visitas.filter(v => v.cl_n === clienteAtual);
+            
+            if(visitasFiltradas.length === 0) {
+                list.innerHTML = '<p style="text-align:center">Vazio</p>';
+                return;
+            }
+
+            visitasFiltradas.forEach(v => {
+                let mapa = v.gps ? `https://www.google.com/maps?q=${v.gps.lat},${v.gps.lng}` : '';
+                let zap = `📋 *RELATÓRIO*%0A👤 ${v.cl_n} - ${v.cl_f}%0A📍 ${v.cl_e}, ${v.cl_c}/${v.cl_u}%0A🌽 ${v.fase}%0A🚨 ${v.diag}%0A💡 ${v.dica}%0A📝 ${v.obs}`;
+                if(mapa) zap += `%0A🗺️ Mapa: ${mapa}`;
+                if(v.ft) zap += `%0A📷 [FOTO EM ANEXO]`;
+
+                list.innerHTML += `<div class="card" style="border-left:4px solid green">
+                    <small>${v.data}</small><br>
+                    <b>${v.cl_f}</b>
+                    <div style="color:#d32f2f;font-weight:bold;margin-top:5px">${v.diag}</div>
+                    ${v.gps ? '<small>📍 GPS Gravado</small><br>' : ''}
+                    <div class="actions">
+                        <button class="btn-zap" onclick="window.open('https://wa.me/?text=${zap}')">📲 Enviar Zap</button>
+                        <button class="btn-del-mini" onclick="delVis(${v.id})">🗑️</button>
+                    </div>
+                </div>`;
+            });
+        }
     }
 
-    // --- AÇÕES ---
+    function abrirPasta(nomeCli) {
+        clienteAtual = nomeCli;
+        renderHist();
+    }
+
+    function fecharPasta() {
+        clienteAtual = null;
+        renderHist();
+    }
+
+    // AÇÕES
     function addCli() {
         let n=val('c_nome'), f=val('c_faz'), e=val('c_end'), c=val('c_cid'), u=val('c_uf');
         if(n&&f&&c) {
             clientes.push({n,f,e,c,u:u.toUpperCase()});
             localStorage.setItem(DB_CLI, JSON.stringify(clientes));
-            alert('Cliente Salvo!');
+            alert('Salvo!');
             ['c_nome','c_faz','c_end','c_cid','c_uf'].forEach(i=>document.getElementById(i).value='');
             renderCli();
-        } else alert('Preencha Nome, Fazenda e Cidade');
+        } else alert('Preencha campos principais');
     }
-
     function delCli(i) { if(confirm('Apagar?')) { clientes.splice(i,1); localStorage.setItem(DB_CLI, JSON.stringify(clientes)); renderCli(); } }
 
     function addDiag() {
@@ -267,28 +320,27 @@
         if(n&&d) {
             diagnosticos.push({c,n,d});
             localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos));
-            alert('Item Salvo!');
+            alert('Salvo!');
             document.getElementById('d_nome').value='';
             document.getElementById('d_dica').value='';
             renderDiag();
-        } else alert('Preencha Nome e Dica');
+        } else alert('Preencha dados');
     }
-
     function delDiag(i) { if(confirm('Apagar?')) { diagnosticos.splice(i,1); localStorage.setItem(DB_DIAG, JSON.stringify(diagnosticos)); renderDiag(); } }
 
     function salvarVisita() {
         let idx=val('v_cli'), fase=val('v_fase'), diagN=val('v_diag'), obs=val('v_obs');
         if(!idx || !fase || !diagN) return alert('Preencha Cliente, Fase e Diagnóstico');
-
         let cli = clientes[idx];
         let diag = diagnosticos.find(d=>d.n===diagN);
-
+        
         visitas.unshift({
+            id: Date.now(), // ID único para apagar corretamente
             data: new Date().toLocaleDateString(),
             cl_n: cli.n, cl_f: cli.f, cl_e: cli.e, cl_c: cli.c, cl_u: cli.u,
             fase, diag: diagN, dica: diag?diag.d:'', obs, gps, ft: temFoto
         });
-
+        
         localStorage.setItem(DB_VIS, JSON.stringify(visitas));
         alert('Visita Salva!');
         
@@ -301,8 +353,17 @@
         document.getElementById('foto_msg').style.display='block';
         gps=null; temFoto=false;
 
-        renderVis();
+        // Vai para a pasta do cliente
         go(2, document.querySelectorAll('.nav-item')[1]);
+        abrirPasta(cli.n);
+    }
+
+    function delVis(id) {
+        if(confirm('Tem certeza que deseja apagar esta visita?')) {
+            visitas = visitas.filter(v => v.id !== id);
+            localStorage.setItem(DB_VIS, JSON.stringify(visitas));
+            renderHist();
+        }
     }
 
     // UTILS
@@ -314,7 +375,6 @@
             e=>{s.innerText='Erro GPS';}
         );
     }
-
     function lerFoto(input) {
         if(input.files[0]) {
             let r=new FileReader();
@@ -327,24 +387,22 @@
             r.readAsDataURL(input.files[0]);
         }
     }
-
     function mostrarDica() {
         let n=val('v_diag'), d=diagnosticos.find(x=>x.n===n), div=document.getElementById('v_dica');
         if(d) { div.style.display='block'; div.innerText="💡 "+d.d; } else div.style.display='none';
     }
-
     function exportar() {
         let t="DATA;CLIENTE;CIDADE;PROBLEMA\n";
         visitas.forEach(v=>t+=`${v.data};${v.cl_n};${v.cl_c};${v.diag}\n`);
         window.open(`https://wa.me/?text=${encodeURIComponent("DADOS GERAIS:\n"+t)}`);
     }
-
     function val(id) { return document.getElementById(id).value; }
     function go(n, el) {
         document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
         document.getElementById('tab'+n).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
         el.classList.add('active');
+        if(n===2 && clienteAtual===null) renderHist(); // Recarrega lista
     }
 </script>
 </body>
